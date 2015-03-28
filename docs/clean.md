@@ -48,4 +48,4 @@ The clean() function is not meant to be used in every $_REQUEST or anything like
 
 ##See Also
 
-[equ](#!equ.md)
+[equ](equ.md)
