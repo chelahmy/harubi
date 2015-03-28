@@ -48,4 +48,4 @@ The equ() function is useful in contructing the WHERE clause for a SQL script.
 
 ##See Also
 
-[clean](#!clean.md)
+[clean](clean.md)
