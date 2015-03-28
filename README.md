@@ -234,20 +234,20 @@ Create more user records and read them back randomly for you to get the initial 
 ##Function List
 
 Initialization and settings:
-[harubi](#!harubi.md)
+[harubi](docs/harubi.md)
 
 The Harubi unique request router:
-[beat](#!beat.md)
+[beat](docs/beat.md)
 
 CRUD functions:
-[create](#!create.md)
-[read](#!read.md)
-[update](#!update.md)
-[delete](#!delete.md)
+[create](docs/create.md)
+[read](docs/read.md)
+[update](docs/update.md)
+[delete](docs/delete.md)
 
 Sanitization functions:
-[clean](#!clean.md)
-[equ](#!equ.md)
+[clean](docs/clean.md)
+[equ](docs/equ.md)
 
 
 
