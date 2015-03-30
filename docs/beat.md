@@ -15,7 +15,7 @@ Before invoking the $controller, beat() will assign all matching arguments with 
 
 If the global $harubi_permission_controller is set then it will be invoked before the $controller. Next, if the $harubi_permission_controller does not return TRUE then beat() will not invoke the $controller and instead beat() will exit with the return value of the $harubi_permission_controller as JSON when it is an array, or as is.
 
-The $harubi_permission_controller function should have three parameters: $model, $action, and $token. Both values of $model and $action will be taken from the matching beat() arguments. The $token value will be taken from $_REQUEST if available. Otherwise, the $token value will be set to an empty string.
+The $harubi_permission_controller function should have two parameters: $model and $action. Both values of $model and $action will be taken from the matching beat() arguments.
 
 ##Parameters
 
