@@ -14,16 +14,16 @@ If the global $harubi_permission_controller contains a function name then the fu
 The following is the expected permission controller function format:
 
 ```
-bool permission_controller(string $model, string $action, string $token);
+bool permission_controller(string $model, string $action);
 ```
 
-A beat() call will assign the $model, $action, and $token arguments to the permission controller.
+A beat() call will assign the $model and $action arguments to the permission controller.
 
 
 ##Example
 
 ```php
-function permission_controller($model, $action, $token)
+function permission_controller($model, $action)
 {
 	if ($model == 'user')
 	{
@@ -42,7 +42,7 @@ $harubi_permission_controller = "permission_controller";
 
 ##Notes
 
-Permission controller is optional. It is usually applied for access control together with user and role management. The $token variable is meant to identify a user session. 
+Permission controller is optional. It is usually applied for access control together with user and role management. 
 
 ##See Also
 
