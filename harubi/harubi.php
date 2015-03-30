@@ -672,13 +672,8 @@ function beat($model, $action, $controller)
 	if ($harubi_permission_controller != null &&
 		is_callable($harubi_permission_controller))
 	{
-		if (isset($_REQUEST['token']))
-			$token = $_REQUEST['token'];
-		else
-			$token = '';
-		
 		$pctrl = new ReflectionFunction($harubi_permission_controller);
-		$status = $pctrl->invokeArgs(array($model, $action, $token));
+		$status = $pctrl->invokeArgs(array($model, $action));
 		
 		if ($status !== TRUE)
 		{
