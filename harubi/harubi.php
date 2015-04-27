@@ -83,6 +83,55 @@ function dump_harubi_logs()
 	file_put_contents('harubi.log', json_encode($harubi_logs));
 }
 
+/**
+* Message enveloping functions to be used in reponding to request.
+* The requester is expected to evaluate the 'status' field first
+* which may have the following values:
+*
+* 'status'
+*    0: an error occurred while processing the request.
+*    1: the request had been successfully processed.
+*    2: the request had been successfully processed with result.
+*
+* On status = 0:
+* The following fields have more information about the error:
+* 'error_code': a signed integer value representing the error.
+* 'error_message': the textual error message.
+*
+* On status = 1:
+* No other field to evaluate.
+*
+* On status = 2:
+* 'results': a mixed type results of the request. 
+*
+*/
+
+function respond_error($error_code, $error_message)
+{
+	return array(
+		'status' => 0,
+		'error_code' => $error_code, 
+		'error_message' => $error_message
+		);
+}
+
+function respond_system_error($error_code = -1)
+{
+	return respond_error($error_code, "System error");
+}
+
+function respond_ok($results = null)
+{
+	if (is_null($results))
+		return array(
+			'status' => 1
+			);
+	else
+		return array(
+			'status' => 2,
+			'results' => $results
+			);
+}
 
 /**
 * Harubi initialization function.
@@ -714,10 +763,7 @@ function beat($model, $action, $controller)
 	else
 	{
 		if ($result == NULL)
-			$result = json_encode(array(
-				'error' => -1, 
-				'error_msg' => "No permission to invoke $model->$action"
-			));
+			$result = json_encode(array(respond_error(-1000, "No permission to invoke $model->$action")));
 	}
 	
 	if (isset($harubi_do_dump_log) && $harubi_do_dump_log)
