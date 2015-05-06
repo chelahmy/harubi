@@ -354,9 +354,9 @@ function equ($name, $value, $type = 'int', $op = '=')
 	}
 	
 	if ($type == 'string' || $lwrop == 'like')
-		return "$name $op \"$value \"";
+		return "`$name` $op '$value'";
 		
-	return "$name $op $value"; 
+	return "`$name` $op $value"; 
 }
 
 function create($table, $fields)
@@ -384,13 +384,13 @@ function create($table, $fields)
 		}
 			
 		$colname = esc($db, $colname);
-		$colnames .= $colname; 
+		$colnames .= "`$colname`"; 
 		$colvals .= sql_val($db, $table, $colname, $colval);
 			
 		++$index;
 	}
 	
-	$query = "INSERT INTO $table ($colnames) " . 
+	$query = "INSERT INTO `$table` ($colnames) " . 
 		"VALUES ($colvals);";
 
 	global $harubi_do_log_querystring;
@@ -486,7 +486,7 @@ function read($table, $fields = FALSE, $where = FALSE, $order_by = FALSE, $sort 
 	$table = esc($db, $table);
 	
 	if ($count)
-		$query = "SELECT COUNT(*) AS count FROM ";
+		$query = "SELECT COUNT(*) AS `count` FROM ";
 	else
 	{
 		if ($fields === FALSE)
@@ -506,13 +506,13 @@ function read($table, $fields = FALSE, $where = FALSE, $order_by = FALSE, $sort 
 				}
 			}
 			else
-				$cols = esc($db, $fields);
+				$cols = "`" . esc($db, $fields) . "`";
 		}
 		
 		$query = "SELECT " . $cols . " FROM ";
 	}
 	
-	$query .= $table;
+	$query .= "`$table`";
 	
 	if ($where !== FALSE)
 	{
@@ -523,7 +523,7 @@ function read($table, $fields = FALSE, $where = FALSE, $order_by = FALSE, $sort 
 	if ($order_by !== FALSE)
 	{
 		$order_by = esc($db, $order_by);
-		$query .= " ORDER BY " . $order_by;
+		$query .= " ORDER BY `$order_by`";
 	}
 	
 	if ($sort !== FALSE && strlen($sort) > 0)
@@ -648,10 +648,10 @@ function delete($table, $where)
 	if ($where !== FALSE)
 	{
 		$where = where_id($where);	
-		$query = "DELETE FROM $table WHERE $where;";
+		$query = "DELETE FROM `$table` WHERE $where;";
 	}
 	else
-		$query = "DELETE FROM $table;";
+		$query = "DELETE FROM `$table`;";
 	
 	global $harubi_do_log_querystring;
 	
