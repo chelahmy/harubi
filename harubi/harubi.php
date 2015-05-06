@@ -45,11 +45,12 @@ $harubi_do_log_querystring = true;
 $harubi_permission_controller = null;
 $harubi_action_cache_func = null;
 
-function harubi_log($function, $line, $type, $message)
+function harubi_log($file, $function, $line, $type, $message)
 {
 	global $harubi_logs;
 	
 	$harubi_logs[] = array(
+		'file' => $file,
 		'function' => $function,
 		'line' => $line,
 		'type' => $type,
@@ -59,7 +60,7 @@ function harubi_log($function, $line, $type, $message)
 
 function harubi_log_debug($line, $message)
 {
-	harubi_log('', $line, 'debug', $message);
+	harubi_log('', '', $line, 'debug', $message);
 }
 
 function get_harubi_logs()
@@ -196,7 +197,7 @@ function harubi($settings = 'settings.inc')
 		if (file_exists($settings))
 			$settings = file_get_contents($settings);
 		elseif ($settings == 'settings.inc')	
-			harubi_log(__FUNCTION__, __LINE__, 'error', 'File settings.inc does not exist');
+			harubi_log(__FILE__,__FUNCTION__, __LINE__, 'error', 'File settings.inc does not exist');
 		
 		$settings = json_decode($settings, TRUE);
 	}
@@ -204,12 +205,12 @@ function harubi($settings = 'settings.inc')
 	if (isset($settings['mysql']))
 		$harubi_mysql_settings = $settings['mysql'];
 	else
-		harubi_log(__FUNCTION__, __LINE__, 'warning', 'No setting for MySQL');
+		harubi_log(__FILE__,__FUNCTION__, __LINE__, 'warning', 'No setting for MySQL');
 
 	if (isset($settings['tables']))
 		$harubi_table_settings = $settings['tables'];
 	else
-		harubi_log(__FUNCTION__, __LINE__, 'warning', 'No setting for tables');
+		harubi_log(__FILE__,__FUNCTION__, __LINE__, 'warning', 'No setting for tables');
 }
 
 function attach_permission_controller($controller)
@@ -224,7 +225,7 @@ function connect_db()
 
 	if (!is_array($harubi_mysql_settings))
 	{
-		harubi_log(__FUNCTION__, __LINE__, 'error', 'MySQL settings are required');
+		harubi_log(__FILE__,__FUNCTION__, __LINE__, 'error', 'MySQL settings are required');
 		return FALSE;
 	}
 	
@@ -239,14 +240,14 @@ function connect_db()
 
 		if (!$dbi || mysqli_connect_errno() != 0)
 		{
-			harubi_log(__FUNCTION__, __LINE__, 'warning', 'Tried to connect with MySQL but failed');
+			harubi_log(__FILE__,__FUNCTION__, __LINE__, 'warning', 'Tried to connect with MySQL but failed');
 			sleep(5); // wait for 5 seconds before retry
 			$dbi = FALSE;
 		}
 	}
 	
 	if ($dbi === FALSE)
-		harubi_log(__FUNCTION__, __LINE__, 'error', 'Failed to connect with MySQL');
+		harubi_log(__FILE__,__FUNCTION__, __LINE__, 'error', 'Failed to connect with MySQL');
 	
 	return $dbi;	
 }
@@ -396,7 +397,7 @@ function create($table, $fields)
 	global $harubi_do_log_querystring;
 	
 	if (isset($harubi_do_log_querystring) && $harubi_do_log_querystring)
-		harubi_log(__FUNCTION__, __LINE__, 'notice', 'Inserting a record into MySQL using query: ' . $query);
+		harubi_log(__FILE__,__FUNCTION__, __LINE__, 'notice', 'Inserting a record into MySQL using query: ' . $query);
 		
 	$wait = 0;
 	$id = -2;
@@ -414,13 +415,13 @@ function create($table, $fields)
 			break;
 		}
 		else
-			harubi_log(__FUNCTION__, __LINE__, 'warning', 'Tried to insert a record into MySQL but failed using query: ' . $query);
+			harubi_log(__FILE__,__FUNCTION__, __LINE__, 'warning', 'Tried to insert a record into MySQL but failed using query: ' . $query);
 	}
 
 	mysqli_close($db);
 
 	if ( $id == -2)
-		harubi_log(__FUNCTION__, __LINE__, 'error', 'Failed to insert a record into MySQL using query: ' . $query);
+		harubi_log(__FILE__,__FUNCTION__, __LINE__, 'error', 'Failed to insert a record into MySQL using query: ' . $query);
 
 	return intval($id);	
 }
@@ -557,7 +558,7 @@ function read($table, $fields = FALSE, $where = FALSE, $order_by = FALSE, $sort 
 	global $harubi_do_log_querystring;
 	
 	if (isset($harubi_do_log_querystring) && $harubi_do_log_querystring)
-		harubi_log(__FUNCTION__, __LINE__, 'notice', 'Selecting a record from MySQL using query: ' . $query);
+		harubi_log(__FILE__,__FUNCTION__, __LINE__, 'notice', 'Selecting a record from MySQL using query: ' . $query);
 		
 	$records = array();
 	
@@ -571,7 +572,7 @@ function read($table, $fields = FALSE, $where = FALSE, $order_by = FALSE, $sort 
 		mysqli_free_result($result);
 	}
 	else
-		harubi_log(__FUNCTION__, __LINE__, 'error', 'Failed to select a record from MySQL using query: ' . $query);
+		harubi_log(__FILE__,__FUNCTION__, __LINE__, 'error', 'Failed to select a record from MySQL using query: ' . $query);
 		
 	mysqli_close($db);
 	
@@ -607,7 +608,7 @@ function update($table, $fields, $where)
 	global $harubi_do_log_querystring;
 	
 	if (isset($harubi_do_log_querystring) && $harubi_do_log_querystring)
-		harubi_log(__FUNCTION__, __LINE__, 'notice', 'Updating a record into MySQL using query: ' . $query);
+		harubi_log(__FILE__,__FUNCTION__, __LINE__, 'notice', 'Updating a record into MySQL using query: ' . $query);
 		
 	$status = FALSE;
 	$wait = 0;
@@ -625,13 +626,13 @@ function update($table, $fields, $where)
 			break;
 		}
 		else
-			harubi_log(__FUNCTION__, __LINE__, 'warning', 'Tried to update a record in MySQL but failed using query: ' . $query);
+			harubi_log(__FILE__,__FUNCTION__, __LINE__, 'warning', 'Tried to update a record in MySQL but failed using query: ' . $query);
 	}
 
 	mysqli_close($db);
 
 	if (!$status)
-		harubi_log(__FUNCTION__, __LINE__, 'error', 'Failed to update a record in MySQL using query: ' . $query);
+		harubi_log(__FILE__,__FUNCTION__, __LINE__, 'error', 'Failed to update a record in MySQL using query: ' . $query);
 
 	return $status;	
 }
@@ -656,7 +657,7 @@ function delete($table, $where)
 	global $harubi_do_log_querystring;
 	
 	if (isset($harubi_do_log_querystring) && $harubi_do_log_querystring)
-		harubi_log(__FUNCTION__, __LINE__, 'notice', 'Deleting a record from MySQL using query: ' . $query);
+		harubi_log(__FILE__,__FUNCTION__, __LINE__, 'notice', 'Deleting a record from MySQL using query: ' . $query);
 		
 	$status = FALSE;
 	$wait = 0;
@@ -674,13 +675,13 @@ function delete($table, $where)
 			break;
 		}
 		else
-			harubi_log(__FUNCTION__, __LINE__, 'warning', 'Tried to delete a record from MySQL but failed using query: ' . $query);
+			harubi_log(__FILE__,__FUNCTION__, __LINE__, 'warning', 'Tried to delete a record from MySQL but failed using query: ' . $query);
 	}
 
 	mysqli_close($db);
 
 	if (!$status)
-		harubi_log(__FUNCTION__, __LINE__, 'error', 'Failed to delete a record from MySQL using query: ' . $query);
+		harubi_log(__FILE__,__FUNCTION__, __LINE__, 'error', 'Failed to delete a record from MySQL using query: ' . $query);
 
 	return $status;	
 }
