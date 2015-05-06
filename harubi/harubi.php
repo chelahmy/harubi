@@ -106,13 +106,23 @@ function dump_harubi_logs()
 *
 */
 
+$harubi_respond_with_logs = FALSE;
+
 function respond_error($error_code, $error_message)
 {
-	return array(
+	global $harubi_respond_with_logs;
+	global $harubi_logs;
+	
+	$respond = array(
 		'status' => 0,
 		'error_code' => $error_code, 
 		'error_message' => $error_message
 		);
+		
+	if ($harubi_respond_with_logs)
+		$respond['logs'] = $harubi_logs;
+		
+	return $respond;
 }
 
 function respond_system_error($error_code = -1)
@@ -122,15 +132,23 @@ function respond_system_error($error_code = -1)
 
 function respond_ok($results = null)
 {
+	global $harubi_respond_with_logs;
+	global $harubi_logs;
+	
 	if (is_null($results))
-		return array(
+		$respond = array(
 			'status' => 1
 			);
 	else
-		return array(
+		$respond = array(
 			'status' => 2,
 			'results' => $results
 			);
+					
+	if ($harubi_respond_with_logs)
+		$respond['logs'] = $harubi_logs;
+		
+	return $respond;
 }
 
 /**
@@ -286,7 +304,7 @@ function sql_val($db, $table_name, $field_name, $value)
 		$field = strtolower($fields[$field_name]);
 		
 		if ($field == 'str' || $field == 'string')
-			return '"'. $value . '"';
+			return "'" . $value . "'";
 			
 		if ($field == 'int'  || $field == 'integer' )
 			return intval($value);
@@ -573,18 +591,18 @@ function update($table, $fields, $where)
 	$table = esc($db, $table);
 	$where = where_id($where);
 
-	$set = '';
+	$set = "";
 
 	foreach ($fields as $colname => $colval)
 	{
 		if (strlen($set) > 0)
-			$set .= ',';
+			$set .= ', ';
 			
 		$colname = esc($db, $colname);
-		$set .= "$colname=" . sql_val($db, $table, $colname, $colval);
+		$set .= "`$colname` = " . sql_val($db, $table, $colname, $colval);
 	}
 	
-	$query = "UPDATE $table SET $set WHERE $where;";
+	$query = "UPDATE `$table` SET $set WHERE $where;";
 	
 	global $harubi_do_log_querystring;
 	
