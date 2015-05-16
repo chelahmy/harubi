@@ -33,17 +33,18 @@
 // protect the database from SQL injection attacks. See the harubi() function for
 // details.
 
-$harubi_mysql_settings = null;
-$harubi_table_settings = null;
+$harubi_mysql_settings = NULL;
+$harubi_table_settings = NULL;
 
 // Log variables
 $harubi_logs = array();
-$harubi_do_dump_log = true;
-$harubi_do_log_querystring = true;
+$harubi_do_dump_log = TRUE;
+$harubi_do_log_querystring = TRUE;
+$harubi_respond_with_logs = FALSE;
 
 // Injected methods
-$harubi_permission_controller = null;
-$harubi_action_cache_func = null;
+$harubi_permission_controller = NULL;
+$harubi_action_cache_func = NULL;
 
 function harubi_log($file, $function, $line, $type, $message)
 {
@@ -106,8 +107,6 @@ function dump_harubi_logs()
 * 'results': a mixed type results of the request. 
 *
 */
-
-$harubi_respond_with_logs = FALSE;
 
 function respond_error($error_code, $error_message)
 {
@@ -717,7 +716,7 @@ function beat($model, $action, $controller)
 {
 	global $harubi_action_cache_func;
 	
-	if ($harubi_action_cache_func != null &&
+	if ($harubi_action_cache_func != NULL &&
 		is_callable($harubi_action_cache_func))
 	{
 		$acfunc = new ReflectionFunction($harubi_action_cache_func);
@@ -737,7 +736,7 @@ function beat($model, $action, $controller)
 	$has_permission = TRUE;
 	$result = NULL;
 	
-	if ($harubi_permission_controller != null &&
+	if ($harubi_permission_controller != NULL &&
 		is_callable($harubi_permission_controller))
 	{
 		$pctrl = new ReflectionFunction($harubi_permission_controller);
