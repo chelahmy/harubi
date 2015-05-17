@@ -156,6 +156,12 @@ function respond_ok($results = null)
 * @param $settings can be a filename or a JSON string with the following example
 * structure. Default to filename 'settings.inc':
 * {
+*	"globals" : {
+*		"do_dump_log" : true,
+*		"do_log_querystring" : true,
+*		"respond_with_logs" : false
+*	},
+*	
 *	"mysql" : {
 *		"hostname" : "localhost",
 *		"username" : "root",
@@ -176,9 +182,11 @@ function respond_ok($results = null)
 *	}
 * }
 *
-* The first part is the MySQL connection settings.
+* The first part is the Harubi global settings.
 *
-* The second part is the tables declaration with fields mapping. Every table is
+* The second part is the MySQL connection settings.
+*
+* The third part is the tables declaration with fields mapping. Every table is
 * assumed to have the id field that does not have to be declared. There are
 * three types of mapping: int, float and string.
 * 
@@ -199,6 +207,24 @@ function harubi($settings = 'settings.inc')
 			harubi_log(__FILE__,__FUNCTION__, __LINE__, 'error', 'File settings.inc does not exist');
 		
 		$settings = json_decode($settings, TRUE);
+	}
+		
+	if (isset($settings['globals']))
+	{
+		global $harubi_do_dump_log;
+		global $harubi_do_log_querystring;
+		global $harubi_respond_with_logs;
+		
+		$globals = $settings['globals'];
+		
+		if (isset($globals['do_dump_log']))
+			$harubi_do_dump_log = $globals['do_dump_log'];
+		
+		if (isset($globals['do_log_querystring']))
+			$harubi_do_log_querystring = $globals['do_log_querystring'];
+		
+		if (isset($globals['respond_with_logs']))
+			$harubi_respond_with_logs = $globals['respond_with_logs'];
 	}
 	
 	if (isset($settings['mysql']))
