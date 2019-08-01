@@ -1,40 +1,52 @@
 <?php
 // harubi.php
-// Harubi - A Model-Beat-Controller (MBC) framework.
-// By Abdullah Daud
+// Harubi - A Model-Beat/Blow-Controller (MBC) framework.
+// By Abdullah Daud, chelahmy@gmail.com
 // 14 November 2013
+// - Start date
+// 10 December 2018
+// - This project has been dormant for a long time and it will find a new life.
+//   The concept is not new and there are many MVC frameworks available. However,
+//   harubi is focusing on model and controller only. Hence, harubi is simpler
+//   minus the view baggage. However, harubi needs a layer of authorization
+//   management to make it useful. Yet, there are many ways to authorize users.
+//   And user management requires the viewing concern which harubi does not have.
+//   Those are the reasons why the harubi project has been dormant.
+// 12 December 2018
+// - Introduced the *blow* routing to simplify URL rewrite.
 
-// Literally, harubi is a keris with a golden handle. Technically, harubi is an
-// application framework similar to the Model-View-Controller (MVC) framework
-// minus the view concern. Harubi introduces a routing handler called *beat*.
+// Literally, harubi is a keris with a golden handle, a Malay traditional hand weapon.
+// Beat and blow are offensive hand movements with or without weapon against an opponent.
+// There is no negative connotation on the words used when we are focusing on winning.
 
-// Harubi is designed to be the servers for rich web client applications.
-// All viewing concerns are delegated to the client side. Harubi handles
-// the models and controllers. Requests are handled using the beat pattern.
+// This harubi is an application framework similar to the Model-View-Controller (MVC)
+// framework minus the view concern. Harubi introduces routing handlers called *beat*
+// and *blow*.
 
-// A beat is a request route, like in URL routing, but it does not expect rewritten 
-// URL. Insteads, a beat is expecting specific query parameters. URL beautification
-// or rewriting is not the concern of Harubi since the URL is not visible to the end
-// user i.e. does not suppose to appear in the browser address bar. A beat is expecting
-// the query to contain at least two parameters: a model name and an action to the
-// model. Arguments for the controller may be passed along with other parameters.
-// A controller is passed as a closure to the beat() function. The beat is expecting
-// the controller to return an associative array which will then be converted to
-// JSON before being passed as the response to the request. See the comment on
-// the beat() function implementation.
+// Harubi is designed to be the servers for rich web client applications. All viewing
+// concerns are delegated to the client side. Harubi handles the models and controllers.
+// Requests are handled using the beat/blow pattern.
 
-// Harubi implements CRUD with object relational mapping (ORM) for MySQL.
-// Every object has a unique ID mapped to the primary index of its table.
-// The create() function returns the new id. The id handling is simplified in the
-// where clause. See the where_id() function.
+// A beat/blow is a request routing. A beat/blow is expecting a query to contain at least
+// two parameters: a model name and an action to the model. It will invoke the controller
+// for the model::action. Arguments for the controller may be passed along with the
+// query. A controller is passed as a closure to the beat()/blow() function. The beat/blow
+// is expecting the controller to return an associative array which will then be converted
+// to JSON before being passed as the response to the request. See the comment on the
+// beat()/blow() function implementation. If it is not an array then it will return as is.
 
-// Harubi is initialized with the database settings. Fields have to be mapped for
-// PHP type conversion including integer, float and string. The conversion also
-// protect the database from SQL injection attacks. See the harubi() function for
-// details.
+// On the model side, harubi implements CRUD with object relational mapping (ORM) for MySQL.
+// Every object has a unique ID mapped to the primary index of its table. The create()
+// function returns the new id. The id handling is simplified in the *where* clause. See
+// the where_id() function.
+
+// Harubi is initialized with the database settings. Fields have to be mapped for PHP type
+// conversion including integer, float and string. The conversion also protect the database
+// from SQL injection attacks. See the harubi() function for details.
 
 $harubi_mysql_settings = NULL;
 $harubi_table_settings = NULL;
+$harubi_query = NULL;
 
 // Log variables
 $harubi_logs = array();
@@ -44,7 +56,7 @@ $harubi_respond_with_logs = FALSE;
 
 // Injected methods
 $harubi_permission_controller = NULL;
-$harubi_action_cache_func = NULL;
+$harubi_cache_func = NULL;
 
 function harubi_log($file, $function, $line, $type, $message)
 {
@@ -196,6 +208,7 @@ function respond_ok($results = null)
 */
 function harubi($settings = 'settings.inc')
 {
+	global $harubi_settings;
 	global $harubi_mysql_settings;
 	global $harubi_table_settings;
 
@@ -209,6 +222,8 @@ function harubi($settings = 'settings.inc')
 		$settings = json_decode($settings, TRUE);
 	}
 		
+	$harubi_settings = $settings;
+	
 	if (isset($settings['globals']))
 	{
 		global $harubi_do_dump_log;
@@ -712,51 +727,22 @@ function delete($table, $where)
 }
 
 /**
-* beat() passes a request to a controller and exits with a response.
-*  
-* Expecting request arguments 'model', 'action' and those
-* matching with the $controller parameters.
-* 
-* The $controller will be invoked if both $model and $action
-* matched with the request. Matching request arguments will
-* also be passed to the $controller. 
-* 
-* The $controller is expected to return with an assoc array
-* which will then be converted to a json string as the response
-* to the request.
-*
-* Prior to all above, permission to invoke the action will be consulted if
-* $harubi_permission_controller is implemented. The permission controller
-* is expected to take 3 arguments: model, action and token which will be
-* taken from the request arguments. And the permission controller is
-* expected to return either TRUE or FALSE. Otherwise, the return value
-* will be taken as is.
-* 
-* @param string $model
-* @param string $action
-* @param closure $controller
-* 
-* @return nothing or response with json data
+* route() is called by beat() and blow().
+* See descriptions on those functions.
 */
-function beat($model, $action, $controller)  
+function route($model, $action, $controller, $use_q = FALSE)
 {
-	global $harubi_action_cache_func;
-	
-	if ($harubi_action_cache_func != NULL &&
-		is_callable($harubi_action_cache_func))
-	{
-		$acfunc = new ReflectionFunction($harubi_action_cache_func);
-		$acfunc->invokeArgs(array($model, $action));
-	}
-	
-	if (!isset($_REQUEST['model']) || !isset($_REQUEST['action']))
-		return;
-		
-	if ($model != $_REQUEST['model'] || $action != $_REQUEST['action'])
-		return;
-	
 	if (!is_callable($controller))
 		return;
+	
+	global $harubi_cache_func;
+	
+	if ($harubi_cache_func != NULL &&
+		is_callable($harubi_cache_func))
+	{
+		$acfunc = new ReflectionFunction($harubi_cache_func);
+		$acfunc->invokeArgs(array($model, $action)); // The cache will decide whether to exit().
+	}
 	
 	global $harubi_permission_controller;
 	$has_permission = TRUE;
@@ -781,20 +767,41 @@ function beat($model, $action, $controller)
 			}
 		}
 	}
+
+	global $harubi_query;
 	
 	if ($has_permission)
 	{
 		$ctrl = new ReflectionFunction($controller);
 		$params = array();
+		$i = 2; // after model and action
 		
 		foreach ($ctrl->getParameters() as $param)
 		{
-			if (isset($_REQUEST[$param->name]))
+			$has_val = FALSE;
+			
+			if ($use_q)
+			{
+				if (is_array($harubi_query) && isset($harubi_query[$i]))
+				{
+					$params[] = $harubi_query[$i];
+					$has_val = TRUE;
+				}
+			}
+			elseif (isset($_REQUEST[$param->name]))
+			{
 				$params[] = $_REQUEST[$param->name];
-			elseif ($param->isDefaultValueAvailable())
-				$params[] = $param->getDefaultValue();
-			else
-				$params[] = NULL;
+				$has_val = TRUE;
+			}
+			
+			if (!$has_val) {
+				if ($param->isDefaultValueAvailable())
+					$params[] = $param->getDefaultValue();
+				else
+					$params[] = NULL;
+			}
+			
+			++$i;
 		}
 
 		$ret = $ctrl->invokeArgs($params);
@@ -807,13 +814,99 @@ function beat($model, $action, $controller)
 	else
 	{
 		if ($result == NULL)
-			$result = json_encode(array(respond_error(-1000, "No permission to invoke $model->$action")));
+			$result = json_encode(array(respond_error(-1000, "No permission to access $model::$action")));
 	}
 	
 	if (isset($harubi_do_dump_log) && $harubi_do_dump_log)
 		dump_harubi_logs();
 
 	exit($result);
+}
+
+/**
+* beat() passes a request to the $controller and calls exit() to exit
+* the entire script with a response to the request. It will do nothing
+* if the $model and $action do not match. If $model is NULL then it
+* takes any, so does $action.
+*  
+* Expecting request arguments 'model', 'action' and those
+* matching with the $controller parameters.
+* 
+* The $controller will be invoked if both $model and $action
+* matched with the request. Matching request arguments will
+* also be passed to the $controller. 
+* 
+* The $controller is expected to return with an assoc array
+* which will then be converted to a json string as the response
+* to the request. Or as is if the return is not an array.
+*
+* Prior to all above, permission to invoke the action will be consulted if
+* $harubi_permission_controller is implemented. The permission controller
+* is expected to take 2 arguments: model and action. And the permission
+* controller is expected to return either TRUE or FALSE. Otherwise, the
+* return value will be taken as is as the response.
+* 
+* @param string $model
+* @param string $action
+* @param closure $controller
+* 
+* @return nothing or response with json data
+*/
+function beat($model, $action, $controller)  
+{
+	if (!isset($_REQUEST['model']) || !isset($_REQUEST['action']))
+		return;
+
+	if ($model == NULL)
+		$model = $_REQUEST['model'];
+		
+	if ($action == NULL)
+		$action = $_REQUEST['action'];
+	
+	if ($model != $_REQUEST['model'] || $action != $_REQUEST['action'])
+		return;
+	
+	route($model, $action, $controller);
+}
+
+/**
+* blow() is similar to beat() except that it takes $_REQUEST['q']
+* instead of $_REQUEST['model'] and $_REQUEST['action'].
+* The 'q' argument is expected to be a string with the following syntax:
+* 'model/action/controller-param1/...'.
+*/
+function blow($model, $action, $controller)
+{
+	global $harubi_query;
+	
+	if ($harubi_query == NULL)
+	{
+		if (!isset($_REQUEST['q']))
+			return;
+	
+		$harubi_query = explode("/", $_REQUEST['q']);
+	}
+
+	if (isset($harubi_query[0]))
+		$m = $harubi_query[0];
+	else
+		$m = NULL;
+
+	if (isset($harubi_query[1]))
+		$a = $harubi_query[1];
+	else
+		$a = NULL;
+		
+	if ($model == NULL && $m != NULL)
+		$model = $m;	
+		
+	if ($action == NULL && $a != NULL)
+		$action = $a;	
+	
+	if ($model != $m || $action != $a)
+		return;
+	
+	route($model, $action, $controller, TRUE);
 }
 
 ?>
