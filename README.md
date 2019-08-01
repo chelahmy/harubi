@@ -1,13 +1,13 @@
 Harubi
 ======
 
-##Introduction
+## Introduction
 
 Harubi is a MVC-like framework for backend servers, minus the View concern. In the era of Web 2.0 and smartphones, most clients render Views themselves. The clients may need to access the servers only for the storage and persistance. Harubi focuses on the servers by controlling access to the data Models. The absence of the View makes Harubi much lighter compared to MVC frameworks. A Harubi server can serve all types of clients including the web, desktops and mobiles. Harubi can also serve APIs.
 
 A Harubi server is an ordinary web server which responds to a request in JSON format.
 
-###Example 1
+### Example 1
 
 A client make a request to a Harubi server by specifying at least two arguments: a **model** and an **action** against the model, together with other related **controller** arguments, if exist. The following is a typical request:
 
@@ -37,7 +37,7 @@ The **beat()** call is pushing three arguments: **$model**, **$action** and **$c
 The beat pattern is the Harubi unique way to route requests to controllers.
 
 
-###Example 2
+### Example 2
 
 The following is another example which the controller has a parameter **name**:
 
@@ -69,7 +69,7 @@ The **equ()** function sanitizes the *where* equation clause for the SQL *select
 
 The **read()** function is one of the implemented CRUD functions in Harubi to simplify the database query processes.
 
-##Model
+## Model
 
 A model is an abstract dataset with action interfaces. In Harubi a model is sliced into a set of beat() call implementations. Every beat() call is implementing an action for a model. It is easy to associate a model to a table in a database. However, in Harubi a model can become very complex such as involving multiple relational tables. As an example, a user may have a role which defines permissions to access the system. There could be a *getpermissions* action on the *user* model which could involve three tables: user, role and permission.
 
@@ -88,7 +88,7 @@ beat('user', 'getpermissions', function ($name)
 });
 ```
  
-##Controller
+## Controller
 
 In Harubi, a controller is usually a closure implemention wrapped in a beat() call. Every controller implements a model's action. It is the duty of a controller to make all necessary database queries and form the respective response for the action as requested. The controller is expected to return an array of records.
 
@@ -111,7 +111,7 @@ function getpermissions_controller($name)
 beat('user', 'getpermissions', 'getpermissions_controller');
 ```
 
-##Getting Started
+## Getting Started
 
 A Harubi server is a web server using PHP and MySQL. Please note that this getting started does not include tutorials in PHP and MySQL. Here you are assumed to know the relational database concept and to have the administrative rights to a MySQL server since you are going to create a table in it. You also need to have the administrative rights to a PHP-based web server since you are going to upload some files in it. Most of the time we assume you know what to do with anything related to PHP and MySQL.
 
@@ -231,7 +231,7 @@ http://example.com/?model=user&action=read&name=ali
 Create more user records and read them back randomly for you to get the initial experience of using a Harubi server. You will not be doing things like that often. Most of the time the requests to a Harubi server will be done by its client applications.
 
 
-##Function List
+## Function List
 
 Initialization and settings:
 [harubi](docs/harubi.md)
