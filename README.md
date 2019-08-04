@@ -185,7 +185,8 @@ In the *user.php* file the call to *harubi()* initiates the Harubi server. The h
 		"hostname" : "localhost",
 		"username" : "root",
 		"password" : "secret",
-		"database" : "harubi"
+		"database" : "harubi",
+		"prefix"   : ""
 	},
 	
 	"tables" : {
