@@ -3,19 +3,20 @@
 // Harubi - A Model-Beat/Blow-Controller (MBC) framework.
 // By Abdullah Daud, chelahmy@gmail.com
 // 14 November 2013
-// - Start date
+// - The project start date.
 // 10 December 2018
+// - No development record had been logged since the start date. Howerever,
+//   it was already applicable as per general description below.
 // - This project has been dormant for a long time and it will find a new life.
 //   The concept is not new and there are many MVC frameworks available. However,
 //   harubi is focusing on model and controller only. Hence, harubi is simpler
-//   minus the view baggage. However, harubi needs a layer of authorization
-//   management to make it useful. Yet, there are many ways to authorize users.
-//   And user management requires the viewing concern which harubi does not have.
-//   Those are the reasons why the harubi project has been dormant.
+//   minus the view baggage.
 // 12 December 2018
 // - Introduced the *blow* routing to simplify URL rewrite.
+// 3 August 2019
+// - Added table prefix to cater for multiple systems on a single database.
 
-// Literally, harubi is a keris with a golden handle, a Malay traditional hand weapon.
+// Literally, *harubi* is a keris with a golden handle, a Malay traditional hand weapon.
 // Beat and blow are offensive hand movements with or without weapon against an opponent.
 // There is no negative connotation on the words used when we are focusing on winning.
 
@@ -33,7 +34,8 @@
 // query. A controller is passed as a closure to the beat()/blow() function. The beat/blow
 // is expecting the controller to return an associative array which will then be converted
 // to JSON before being passed as the response to the request. See the comment on the
-// beat()/blow() function implementation. If it is not an array then it will return as is.
+// beat()/blow() function implementation. If the controller does not return an array then
+// beat()/blow() will return it as is.
 
 // On the model side, harubi implements CRUD with object relational mapping (ORM) for MySQL.
 // Every object has a unique ID mapped to the primary index of its table. The create()
@@ -178,7 +180,8 @@ function respond_ok($results = null)
 *		"hostname" : "localhost",
 *		"username" : "root",
 *		"password" : "****",
-*		"database" : "board"
+*		"database" : "board",
+*		"prefix"   : ""
 *	},
 *	
 *	"tables" : {
@@ -303,6 +306,17 @@ function esc($db, $str, $like = FALSE)
 	return $str;
 }
 
+function table_pre($table_name)
+{
+	global $harubi_mysql_settings;
+	
+	if (is_array($harubi_mysql_settings) && isset($harubi_mysql_settings['prefix']) &&
+		strlen($harubi_mysql_settings['prefix']) > 0)
+		return $harubi_mysql_settings['prefix'] . '_' . $table_name;
+		
+	return $table_name;
+}
+
 function table_exists($table)
 {
 	$exist = FALSE;
@@ -311,7 +325,8 @@ function table_exists($table)
 	if ($db === FALSE)
 		return $exist;
 		
-	$table = esc($table);
+	$table = table_pre($table);
+	$table = esc($db, $table);
 	
 	if ($result = mysqli_query($db, "SHOW TABLES LIKE '" . $table . "'"))
 	{
@@ -410,6 +425,7 @@ function create($table, $fields)
 	if (!is_array($fields))
 		$fields = json_decode($fields, TRUE);
 		
+	$table = table_pre($table);
 	$table = esc($db, $table);
 
 	$index = 0;
@@ -524,6 +540,7 @@ function read($table, $fields = FALSE, $where = FALSE, $order_by = FALSE, $sort 
 	if ($db === FALSE)
 		return FALSE;
 
+	$table = table_pre($table);
 	$table = esc($db, $table);
 	
 	if ($count)
@@ -629,6 +646,7 @@ function update($table, $fields, $where)
 	if (!is_array($fields))
 		$fields = json_decode($fields, TRUE);
 		
+	$table = table_pre($table);
 	$table = esc($db, $table);
 	$where = where_id($where);
 
@@ -684,6 +702,7 @@ function delete($table, $where)
 	if ($db === FALSE)
 		return FALSE;
 		
+	$table = table_pre($table);
 	$table = esc($db, $table);
 	
 	if ($where !== FALSE)
