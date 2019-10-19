@@ -3,7 +3,7 @@ Harubi
 
 ## Introduction
 
-Harubi is a MVC-like framework for backend servers, minus the View concern. In the era of Web 2.0 and smartphones, most clients render Views themselves. The clients may need to access the servers only for the storage and persistance. Harubi focuses on the servers by controlling access to the data Models. The absence of the View makes Harubi much lighter compared to MVC frameworks. A Harubi server can serve all types of clients including the web, desktops and mobiles. Harubi can also serve APIs.
+Harubi is a MVC-like framework for backend servers, minus the View concern. In the era of Web 2.0 and smartphones, most clients render Views themselves. The clients may need to access the servers only for the storage and persistance. Harubi focuses on the servers by **controlling** access to the data **models**. The absence of the **view** makes Harubi much lighter compared to other back-end MVC frameworks. A Harubi server can serve all types of clients including the web, desktops and mobiles. Harubi can also serve APIs.
 
 A Harubi server is an ordinary web server which responds to a request in JSON format.
 
