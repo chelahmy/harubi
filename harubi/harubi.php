@@ -15,6 +15,12 @@
 // - Introduced the *blow* routing to simplify URL rewrite.
 // 3 August 2019
 // - Added table prefix to cater for multiple systems on a single database.
+// 10 October 2019
+// - Added checking table name in settings through table_defined() before proceeding
+//   with execution in functions that refer to table.
+// - Added option to collapse read() parameters into an array.
+// - Added option to collapse parameters $type and $op in equ(). See equ().
+// - Added more comments on various functions.
 
 // Literally, *harubi* is a keris with a golden handle, a Malay traditional hand weapon.
 // Beat and blow are offensive hand movements with or without weapon against an opponent.
@@ -262,6 +268,9 @@ function attach_permission_controller($controller)
 	$harubi_permission_controller = $controller;
 }
 
+/**
+* Connect to MySQL database.
+*/
 function connect_db()
 {
 	global $harubi_mysql_settings;
@@ -295,6 +304,9 @@ function connect_db()
 	return $dbi;	
 }
 
+/**
+* Apply database string escaping format to $str to prevent SQL injection. 
+*/
 function esc($db, $str, $like = FALSE)
 {
 	$str = mysqli_real_escape_string($db, $str);
@@ -306,6 +318,9 @@ function esc($db, $str, $like = FALSE)
 	return $str;
 }
 
+/**
+* If defined in settings then prepend table name prefix.
+*/
 function table_pre($table_name)
 {
 	global $harubi_mysql_settings;
@@ -317,14 +332,37 @@ function table_pre($table_name)
 	return $table_name;
 }
 
+/**
+* Check if $table is defined in the settings.
+*/
+function table_defined($table)
+{
+	global $harubi_table_settings;
+	
+	if ($table === FALSE)
+		return FALSE;
+		
+	if (array_key_exists($table, $harubi_table_settings))
+		return TRUE;
+		
+	return FALSE;
+}
+
+/**
+* Check if $table is defined in the settings and
+* exists in the database. 
+*/
 function table_exists($table)
 {
-	$exist = FALSE;
+	if (!table_defined($table))
+		return FALSE;
+	
 	$db = connect_db();
 	
 	if ($db === FALSE)
-		return $exist;
+		return FALSE;
 		
+	$exist = FALSE;
 	$table = table_pre($table);
 	$table = esc($db, $table);
 	
@@ -341,6 +379,10 @@ function table_exists($table)
 	return $exist;
 }
 
+/**
+* Quote string $value and apply database string escaping format
+* to $value to prevent SQL injection. 
+*/
 function sql_val($db, $table_name, $field_name, $value)
 {
 	global $harubi_table_settings;
@@ -372,6 +414,9 @@ function sql_val($db, $table_name, $field_name, $value)
 	return $value;
 }
 
+/**
+* Apply database string escaping format to $value to prevent SQL injection. 
+*/
 function clean($value, $type = 'int', $like = FALSE)
 {
 	if ($type == 'int')
@@ -387,8 +432,21 @@ function clean($value, $type = 'int', $like = FALSE)
 	return esc($db, $value, $like);
 }
 
+/**
+* Construct a proper equation string with database string escaping
+* format to prevent SQL injection attack.
+* If parameter $type is not 'int', 'float', or 'string' then
+* it is representing $op and the actual $type is default to 'int'.
+*/
 function equ($name, $value, $type = 'int', $op = '=')
 {
+	if ($type != 'int' && $type != 'float' && $type != 'string')
+	{
+		// $type is used for $op
+		$op = $type;
+		$type = 'int'; // default
+	}
+	
 	$db = connect_db();
 
 	if ($db === FALSE)
@@ -415,8 +473,18 @@ function equ($name, $value, $type = 'int', $op = '=')
 	return "`$name` $op $value"; 
 }
 
+/**
+* Insert a record into a database table.
+* Return
+*   >= 0: record id
+*     -1: system error
+*     -2: database error
+*/
 function create($table, $fields)
 {
+	if (!table_defined($table))
+		return -1;
+	
 	$db = connect_db();
 
 	if ($db === FALSE)
@@ -485,8 +553,9 @@ function create($table, $fields)
 /**
 * Expands a short form 'where' with sugar coated 'id' field:
 * - Numeric $where will be prepended with 'id='.
-* - $where started with an operator will be prepended with 'id'. 
-* For both cases the value after the operator will be casted to integer.
+* - String $where started with an operator will be prepended with 'id'. 
+* For both cases the value after the operator will be casted to integer
+* to prevent SQL injection.
 * 
 * Otherwise, return $where as is.
 * 
@@ -533,8 +602,46 @@ function where_id($where)
 	return $where;
 }
 
+/**
+* Read records from a database table.
+* If the parameter $table is an array then all parameters including $table are defined in the array.
+* Omitted parameters will be defined as FALSE.
+*/
 function read($table, $fields = FALSE, $where = FALSE, $order_by = FALSE, $sort = FALSE, $limit = FALSE, $offset = FALSE, $count = FALSE)
 {
+	if (is_array($table))
+	{
+		$params = $table;
+		$table = FALSE;
+		
+		if (array_key_exists('table', $params))
+			$table = $params['table'];
+		
+		if (array_key_exists('fields', $params))
+			$fields = $params['fields'];
+		
+		if (array_key_exists('where', $params))
+			$where = $params['where'];
+		
+		if (array_key_exists('order_by', $params))
+			$order_by = $params['order_by'];
+		
+		if (array_key_exists('sort', $params))
+			$sort = $params['sort'];
+		
+		if (array_key_exists('limit', $params))
+			$limit = $params['limit'];
+		
+		if (array_key_exists('offset', $params))
+			$offset = $params['offset'];
+		
+		if (array_key_exists('count', $params))
+			$count = $params['count'];			
+	}
+
+	if (!table_defined($table))
+		return FALSE;
+	
 	$db = connect_db();
 
 	if ($db === FALSE)
@@ -636,6 +743,9 @@ function read($table, $fields = FALSE, $where = FALSE, $order_by = FALSE, $sort 
 	return $records;
 }
 
+/**
+* Update records on a database table.
+*/
 function update($table, $fields, $where)
 {
 	$db = connect_db();
@@ -695,6 +805,9 @@ function update($table, $fields, $where)
 	return $status;	
 }
 
+/**
+* Delete records from a database table.
+*/
 function delete($table, $where)
 {
 	$db = connect_db();
