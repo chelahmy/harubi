@@ -32,7 +32,7 @@ The name-value pair fields of the new record. Every record has the `id` field wh
 ## Examples
 
 ```php
-$id = create('user', array('name' => 'ali', 'password' => 'secret'));
+$id = create('user', ['name' => 'ali', 'password' => 'secret']);
 ```
 The create() call above will create the following record:
 
