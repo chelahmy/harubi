@@ -37,9 +37,7 @@ Nothing, or beat() will exit the process. If the `$controller` is invoked then b
 // http://example.com/?model=system&action=gettime
 beat('system', 'gettime', function ()
 {	
-	return array(
-		'time' => time()
-	);
+	return array['time' => time()];
 });
 ```
 
