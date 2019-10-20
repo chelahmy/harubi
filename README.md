@@ -38,6 +38,14 @@ The **beat()** call is pulling three arguments: **$model**, **$action** and **$c
 
 The beat pattern is the Harubi unique way to route requests to controllers.
 
+The beat() function has a cousin which is **blow()**. They are generally the same function except that blow() accepts request which is more url-rewrite friendly:
+
+```
+http://example.com/?q=system/gettime
+```
+
+Through out the documentation we will use beat() more often then blow().
+
 
 ### Example 2
 
