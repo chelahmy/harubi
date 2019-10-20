@@ -7,6 +7,7 @@ Construct a sanitized equation for use in a SQL script.
 
 ```php
 string equ(string $name, mixed $value, string $type = 'int', string $op = '=')
+string equ(string $name, mixed $value, string $op) // $type = 'int', and $op must be specified
 ```
 
 Construct a string equation such as "name=value" where both the name and the value will be sanitized before the construct. Both the `$name` and the `$value` are assumed to have come from an unmanaged source such as `$_REQUEST`. Sanitization is to protect from the infamous SQL injection attack.
@@ -39,6 +40,7 @@ The sanitized equation string.
 $where = equ('id', 7); // id = 7
 $where = equ('name', 'ali', 'string'); // name = "ali"
 $where = equ('age', 60, 'int', '<'); // age < 60
+$where = equ('age', 60, '<'); // age < 60
 $where = equ('name', 'a%', 'string', 'LIKE'); // name LIKE "a%"
 ```
 
