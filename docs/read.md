@@ -6,7 +6,7 @@ Read database records.
 ## Description
 
 ```php
-array read(
+mixed read(
     string $table, 
     mixed  $fields   = FALSE, 
     string $where    = FALSE, 
@@ -14,7 +14,20 @@ array read(
     string $sort     = FALSE, 
     int    $limit    = FALSE, 
     int    $offset   = FALSE, 
-    bool   $count    = FALSE)
+    bool   $count    = FALSE
+)
+```
+```php
+mixed read([
+    'table'    => 'table-name',
+    'fields'   => FALSE,
+    'where'    => FALSE,
+    'order_by' => FALSE,
+    'sort'     => FALSE,
+    'limit'    => FALSE,
+    'offset'   => FALSE,
+    'count'    => FALSE
+])
 ```
 Read records from `$table` that meet with the given criteria. The read() function constructs the SQL SELECT statement filled with the values from the given arguments whichever are not set to FALSE. The default to all is FALSE. Then, the read() function makes the SELECT query against the database, and return records.
 
@@ -120,7 +133,7 @@ $records = read('user', FALSE, '>7'); // the users with id larger than 7 will be
 $records = read('user', FALSE, 'name="ali"'); // the user with the name "ali" will be returned
 $records = read('user', FALSE, equ('name', 'ali', 'string')); // same as above
 $records = read('user', 'email', equ('name', 'ali', 'string')); // same as above but only email
-$records = read('user', array('name', 'email')); // all user names and emails
+$records = read('user', ['name', 'email']); // all user names and emails
 $records = read('user', FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, TRUE); // the count of all records
 ```
 
