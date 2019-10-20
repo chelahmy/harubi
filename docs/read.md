@@ -16,7 +16,7 @@ array read(
     int    $offset   = FALSE, 
     bool   $count    = FALSE)
 ```
-Read records from `$table` that meet with the given criteria. The read() function construct the SQL SELECT statement filled with the values from the given arguments whichever are not set to FALSE. Then, the read() function makes the SELECT query against the database, and return records.
+Read records from `$table` that meet with the given criteria. The read() function constructs the SQL SELECT statement filled with the values from the given arguments whichever are not set to FALSE. Then, the read() function makes the SELECT query against the database, and return records.
 
 All arguments will be sanitized by the read() function except `$where`. You have to construct the `$where` clause according to your requirement. You may use [clean()](clean.md) and [equ()](equ.md) to sanitize inputs from unmanaged sources.
 
