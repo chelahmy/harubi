@@ -8,13 +8,13 @@ Read database records.
 ```php
 array read(
     string $table, 
-    mixed $fields = FALSE, 
-    string $where = FALSE, 
+    mixed  $fields   = FALSE, 
+    string $where    = FALSE, 
     string $order_by = FALSE, 
-    string $sort = FALSE, 
-    int $limit = FALSE, 
-    int $offset = FALSE, 
-    bool $count = FALSE)
+    string $sort     = FALSE, 
+    int    $limit    = FALSE, 
+    int    $offset   = FALSE, 
+    bool   $count    = FALSE)
 ```
 Read records from `$table` that meet with the given criteria. The read() function construct the SQL SELECT statement filled with the values from the given arguments whichever are not set to FALSE. Then, the read() function makes the SELECT query against the database, and return records.
 
