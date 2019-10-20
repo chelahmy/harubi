@@ -76,10 +76,11 @@ The beat() function is the backbone of Harubi. There should be as many beat() fu
 
 ## See Also
 
-[clean()](clean.md)
+[blow()](blow.md)
 [create()](create.md)
-[delete()](delete.md)
-[equ()](equ.md)
 [read()](read.md)
 [update()](update.md)
+[delete()](delete.md)
+[clean()](clean.md)
+[equ()](equ.md)
 
