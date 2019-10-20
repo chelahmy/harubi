@@ -1,18 +1,18 @@
-clean
-=====
+clean()
+=======
 
 Sanitize a value before assigning it to a SQL script.
 
-##Description
+## Description
 
-```
+```php
 mixed clean(mixed $value, string $type = 'int', $like = FALSE)
 ```
 
 Sanitize the $value for later use in a SQL script. The $value is assumed to have come from an unmanaged source such as $_REQUEST. Sanitization is to protect from the infamous SQL injection attack.
 
 
-##Parameters
+## Parameters
 
 ***value***
 
@@ -28,11 +28,11 @@ A string value will be escaped.
 
 Set this to TRUE if the value is to be used in the SQL's LIKE clause. The default is FALSE.
 
-##Return Values
+## Return Values
 
 The sanitized value.
 
-##Examples
+## Examples
 
 ```php
 $val1 = clean(3); // 3
@@ -42,10 +42,10 @@ $val4 = clean('abc', 'string'); // 'abc'
 $val5 = clean(5, 'string'); // '5'
 ```
 
-##Notes
+## Notes
 
-The clean() function is not meant to be used in every $_REQUEST or anything like it. Sanitization is only for values that are going to be included in SQL scripts.
+The clean() function is not meant to be used in every $_REQUEST or anything like it. Sanitization is only useful for values that are going to be included in SQL scripts.
 
-##See Also
+## See Also
 
-[equ](equ.md)
+[equ()](equ.md)
