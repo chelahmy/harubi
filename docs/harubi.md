@@ -59,7 +59,7 @@ You have to list all tables used in harubi, and map all fields to harubi field t
 
 ## Parameters
 
-***settings***
+***$settings***
 
 If `$settings` is omitted then harubi will load settings from the JSON formatted *settings.inc* file.
 
