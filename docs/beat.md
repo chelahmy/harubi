@@ -48,7 +48,6 @@ beat('system', 'gettime', function ()
 beat('user', 'read', function ($name)
 {	
 	$where = equ('name', $name, 'string');
-
 	$records = read('user', $where);
 
 	return $records[0];
@@ -57,14 +56,12 @@ beat('user', 'read', function ($name)
 
 ```php
 // http://example.com/?model=user&action=getpermissions&name=ali
+
 function getpermissions_controller($name)
 {
 	$where = equ('name', $name, 'string');
-
 	$user_records = read('user', $where);
-
 	$role_records = read('role', "name=" . $user_records[0]['role']);
-
 	$perm_records = read('permission', "role_id=" . $role_records[0]['id']);
 
 	return $perm_records;
