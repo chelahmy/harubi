@@ -5,19 +5,19 @@ Create a new record in a database.
 
 ## Description
 
-```
+```php
 int create(string $table, array $fields)
 ```
 
-Insert a new record containing the $fields into the $table in a database. No need to sanitize the the $table and the $fields because they will be sanitized by create() prior to being passed to the database.
+Insert a new record containing the `$fields` into the `$table` in a database. No need to sanitize the the `$table` and the `$fields` because they will be sanitized by create() prior to being passed to the database.
 
 ## Parameters
 
-***table***
+***$table***
 
 The name of the table where the new record is to be created in.
 
-***fields***
+***$fields***
 
 The name-value pair fields of the new record. Every record has the 'id' field which does not have to be specified during record creation. The 'id' field will be set with a unique serial number.
 
