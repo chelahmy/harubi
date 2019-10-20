@@ -29,7 +29,7 @@ The name of the controller function. The controller function can have any number
 
 ## Return Values
 
-Nothing, or beat() will exit the process. If the $controller or the global $harubi_permission_controller is invoked then beat() will call the exit() function after any of them returns.
+Nothing, or beat() will exit the process. If the $controller is invoked then beat() will call the exit() function after it returns.
 
 ## Examples
 
