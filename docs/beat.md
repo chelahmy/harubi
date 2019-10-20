@@ -11,7 +11,7 @@ void beat(string $model, string $action, string $controller)
 
 The beat() function compares $_REQUEST['model'] with $model and $_REQUEST['action'] with $action. If they both matched then the $controller will be invoked and beat() will exit with the return value of the $controller. If the $controller returns an array then beat() will exit with a JSON converted content of the array. Otherwise, beat() will return whatever the $controller returns as-is.
 
-Before invoking the $controller, beat() will assign all matching arguments with the $_REQUEST to the $controller. The $controller is free to have any number of parameters or none.
+Before invoking the $controller, beat() will assign all matching arguments in the $_REQUEST to the $controller. The $controller is free to have any number of parameters or none.
 
 ## Parameters
 
