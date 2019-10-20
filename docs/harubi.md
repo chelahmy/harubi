@@ -11,7 +11,7 @@ void harubi(mixed $settings = 'settings.inc')
 
 Initialize harubi with the appropriate settings which includes database credential, table and field mapping.
 
-No, harubi will not take any database administrator away any time soon. You still need to have a good SQL knowledge and experience to use Harubi. However, Harubi is only interested in object-relational mapping which is a subset of the relational model. At least, you have to create database tables yourself.
+No, harubi will not take any database administrator away any time soon. You still need to have a good SQL knowledge and experience to use harubi. However, harubi is only interested in object-relational mapping which is a subset of the relational model. At least, you have to create database tables yourself.
 
 harubi needs to know field types: `string`, `integer` or `float`. These will help harubi to sanitize field values and to use quotes properly in constructing SQL string. Thus, you need to specify the field mapping.
 
