@@ -19,7 +19,7 @@ The `$table` argument will be sanitized by the delete() function but not `$where
 The name of the table where the records are to be deleted.
 
 ***$where***
-The WHERE clause arguments in the form of string. If `$where` contains only an integer then it is assumed to be the `id` value as in `'id={integer}'`. If `$where` starts with an operator then it is assumed as an operation against the `id` such as `'id>{integer}'`.
+The SQL WHERE clause arguments in the form of string. If `$where` contains only an integer then it is assumed to be the `id` value as in `'id={integer}'`. If `$where` starts with an operator then it is assumed as an operation against the `id` such as `'id>{integer}'`.
 
 `$where` will not be sanitized by the delete() function. You may use [clean()](clean.md) and [equ()](equ.md) to sanitize inputs from unmanaged sources.
 
