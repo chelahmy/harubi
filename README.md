@@ -26,9 +26,7 @@ The Harubi server implementation looks like the following:
 ```php
 beat('system', 'gettime', function ()
 {	
-	return array(
-		'time' => time()
-	);
+	return ['time' => time()];
 });
 ```
 
@@ -59,7 +57,6 @@ http://example.com/?model=user&action=read&name=ali
 beat('user', 'read', function ($name)
 {	
 	$where = equ('name', $name, 'string');
-
 	$records = read('user', $where);
 
 	return $records[0];
@@ -87,11 +84,8 @@ A model is an abstract dataset with action interfaces. In Harubi a model is slic
 beat('user', 'getpermissions', function ($name)
 {	
 	$where = equ('name', $name, 'string');
-
 	$user_records = read('user', $where);
-
 	$role_records = read('role', "name=" . $user_records[0]['role']);
-
 	$perm_records = read('permission', "role_id=" . $role_records[0]['id']);
 
 	return $perm_records;
@@ -108,11 +102,8 @@ If a controller is a closure then you may be tricked to see that a beat() call i
 function getpermissions_controller($name)
 {
 	$where = equ('name', $name, 'string');
-
 	$user_records = read('user', $where);
-
 	$role_records = read('role', "name=" . $user_records[0]['role']);
-
 	$perm_records = read('permission', "role_id=" . $role_records[0]['id']);
 
 	return $perm_records;
@@ -139,32 +130,31 @@ harubi();
 beat('user', 'create', function ($name, $password)
 {	
 	$where = equ('name', $name, 'string');
-
 	$records = read('user', $where);
 
 	if (count($records) <= 0)
 	{
 		$now = time();
 		$hash = password_hash($password, PASSWORD_BCRYPT);
-		$id = create('user', array(
+		$id = create('user', [
 			'name' => $name,
 			'password' => $hash,
 			'created_utc' => $now,
 			'updated_utc' => $now
-			));	
+			]);	
 
 		if ($id > 0)
-			return array(
+			return [
 				'name' => $name,
 				'created_utc' => $now,
 				'updated_utc' => $now
-				);
+				];
 	}
 
-	return array(
+	return [
 		'error' => 1,
 		'error_msg' => 'Could not create user'
-		);
+		];
 });
 
 beat('user', 'read', function ($name)
@@ -180,10 +170,10 @@ beat('user', 'read', function ($name)
 		return $records[0];
 	}
 
-	return array(
+	return [
 		'error' => 1,
 		'error_msg' => 'Could not read user'
-		);
+		];
 });
 ```
 
