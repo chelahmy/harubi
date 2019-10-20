@@ -32,13 +32,13 @@ beat('system', 'gettime', function ()
 });
 ```
 
-The **beat()** call is pulling three arguments: **$model**, **$action** and **$controller**. In the case above the $model is set to `system`, the $action is set to `gettime`, and the $controller is set to a function closure. The beat() function will test whether the request matches with the specified model and action. If it does than the controller will be invoked. If the controller function has parameters then the values will be retrieved from the request query string. However, in this case the controller has no parameter. The controller is expected to return an array which will be converted into JSON before the beat() function exits. 
+The **[beat()](docs/beat.md)** call is pulling three arguments: **$model**, **$action** and **$controller**. In the case above the $model is set to `system`, the $action is set to `gettime`, and the $controller is set to a function closure. The beat() function will test whether the request matches with the specified model and action. If it does than the controller will be invoked. If the controller function has parameters then the values will be retrieved from the request query string. However, in this case the controller has no parameter. The controller is expected to return an array which will be converted into JSON before the beat() function exits. 
 
 **The beat process explained:** Whenever the $model and $action matched, the beat() function will invoke the $controller and wait for it to return, convert the return array into json, or leave it as-is if the return value is not an array, and then force PHP to exit with the json/as-is return value as the response. Otherwise, the execution will continue looking for the next beat() calls.
 
 The beat pattern is the Harubi unique way to route requests to controllers.
 
-The beat() function has a cousin which is **blow()**. They are generally the same function except that blow() accepts request which is more url-rewrite friendly:
+The beat() function has a cousin which is **[blow()](docs/blow.md)**. They are generally the same function except that blow() accepts request which is more url-rewrite friendly:
 
 ```
 http://example.com/?q=system/gettime
@@ -251,6 +251,7 @@ Initialization and settings:
 
 The Harubi unique request router:
 [beat()](docs/beat.md)
+[blow()](docs/blow.md)
 
 CRUD functions:
 [create()](docs/create.md)
