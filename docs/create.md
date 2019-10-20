@@ -19,7 +19,7 @@ The name of the table where the new record is to be created in.
 
 ***$fields***
 
-The name-value pair fields of the new record. Every record has the 'id' field which does not have to be specified during record creation. The 'id' field will be set with a unique serial number.
+The name-value pair fields of the new record. Every record has the `id` field which does not have to be specified during record creation. The `id` field will be set with a unique serial number.
 
 ## Return Values
 
