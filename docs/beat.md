@@ -1,7 +1,7 @@
 beat()
 ======
 
-Harubi request router.
+A harubi request router.
 
 ## Description
 
@@ -72,7 +72,7 @@ beat('user', 'getpermissions', 'getpermissions_controller');
 
 ## Notes
 
-The beat() function is the backbone of Harubi. There should be as many beat() function calls as to the total of all models + actions. A combination of a model and a action should be unique in any beat() function call. There should not be two or more beat() with the same model and action. Otherwise, only the first beat() will be called.
+The beat() function is the backbone of harubi. There should be as many beat() function calls as to the total of all models + actions. A combination of a model and a action should be unique in any beat() function call. There should not be two or more beat() with the same model and action. Otherwise, only the first beat() will be called.
 
 ## See Also
 
