@@ -34,6 +34,7 @@ Nothing, or beat() will exit the process. If the $controller or the global $haru
 ## Examples
 
 ```php
+// http://example.com/?model=system&action=gettime
 beat('system', 'gettime', function ()
 {	
 	return array(
@@ -43,6 +44,7 @@ beat('system', 'gettime', function ()
 ```
 
 ```php
+// http://example.com/?model=user&action=read&name=ali
 beat('user', 'read', function ($name)
 {	
 	$where = equ('name', $name, 'string');
@@ -54,6 +56,7 @@ beat('user', 'read', function ($name)
 ```
 
 ```php
+// http://example.com/?model=user&action=getpermissions&name=ali
 function getpermissions_controller($name)
 {
 	$where = equ('name', $name, 'string');
