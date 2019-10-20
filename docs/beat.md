@@ -5,7 +5,7 @@ Harubi request router.
 
 ## Description
 
-```
+```php
 void beat(string $model, string $action, string $controller)
 ```
 
