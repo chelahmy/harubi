@@ -48,10 +48,10 @@ The create() function simplifies the process to insert a record into a database.
 
 ## See Also
 
-[beat()](#beat.md)
-[blow()](#blow.md)
-[clean()](#clean.md)
-[delete()](#delete.md)
-[equ()](#equ.md)
-[read()](#read.md)
-[update()](#update.md)
+[beat()](beat.md)
+[blow()](blow.md)
+[clean()](clean.md)
+[delete()](delete.md)
+[equ()](equ.md)
+[read()](read.md)
+[update()](update.md)
