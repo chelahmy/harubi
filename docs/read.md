@@ -136,6 +136,16 @@ $records = read('user', 'email', equ('name', 'ali', 'string')); // same as above
 $records = read('user', ['name', 'email']); // all user names and emails
 $records = read('user', FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, TRUE); // the count of all records
 ```
+```php
+$records = read(['table'=>'user']); // all user records will be returned
+$records = read(['table'=>'user', 'where'=>7]); // the user with id = 7 will be returned
+$records = read(['table'=>'user', 'where'=>'>7']); // the users with id larger than 7 will be returned
+$records = read(['table'=>'user', 'where'=>'name="ali"']); // the user with the name "ali" will be returned
+$records = read(['table'=>'user', 'where'=>equ('name','ali','string')]); // same as above
+$records = read(['table'=>'user', 'fields'=>'email', 'where'=>equ('name','ali','string')]); // same as above but only email
+$records = read(['table'=>'user', 'fields'=>['name','email']]); // all user names and emails
+$records = read(['table'=>'user', 'count'=>TRUE]); // the count of all records
+```
 
 ## Notes
 
