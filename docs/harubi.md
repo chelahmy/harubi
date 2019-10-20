@@ -1,7 +1,7 @@
 harubi()
 ========
 
-The Harubi initialization function.
+The harubi initialization function.
 
 ## Description
 
@@ -9,11 +9,11 @@ The Harubi initialization function.
 void harubi(mixed $settings = 'settings.inc')
 ```
 
-Initialize Harubi with the appropriate settings which includes database credential, table and field mapping.
+Initialize harubi with the appropriate settings which includes database credential, table and field mapping.
 
-No, Harubi will not take any database administrator away any time soon. You still need to have a good SQL knowledge and experience to use Harubi. However, Harubi is only interested in object-relational mapping which is a subset of the relational model. At least, you have to create database tables yourself.
+No, harubi will not take any database administrator away any time soon. You still need to have a good SQL knowledge and experience to use Harubi. However, Harubi is only interested in object-relational mapping which is a subset of the relational model. At least, you have to create database tables yourself.
 
-Harubi needs to know field types: `string`, `integer` or `float`. These will help Harubi to sanitize field values and to use quotes properly in constructing SQL string. Thus, you need to specify the field mapping.
+harubi needs to know field types: `string`, `integer` or `float`. These will help harubi to sanitize field values and to use quotes properly in constructing SQL string. Thus, you need to specify the field mapping.
 
 The settings has three main components: `globals`, `mysql` and `tables`.
 
@@ -106,5 +106,5 @@ The harubi() function above will load a *settings.inc* file such as the followin
 
 ## Notes
 
-Currently Harubi only supports MySQL. The choice for PHP and MySQL was obviously due to the generally available and affordable shared web hostings.
+Currently harubi only supports MySQL. The choice for PHP and MySQL was obviously due to the generally available and affordable shared web hostings.
 
