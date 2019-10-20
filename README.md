@@ -44,7 +44,7 @@ The beat() function has a cousin which is **blow()**. They are generally the sam
 http://example.com/?q=system/gettime
 ```
 
-Through out the documentation we will use beat() more often then blow().
+Through out the documentation we will use beat() more often then blow(), for the beat() request verbosity which is clearer to explain.
 
 
 ### Example 2
