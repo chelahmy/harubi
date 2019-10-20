@@ -115,9 +115,11 @@ beat('user', 'getpermissions', 'getpermissions_controller');
 
 ## Getting Started
 
-A Harubi server is a web server using PHP and MySQL. Please note that this getting started does not include tutorials in PHP and MySQL. Here you are assumed to know the relational database concept and to have the administrative rights to a MySQL server since you are going to create a table in it. You also need to have the administrative rights to a PHP-based web server since you are going to upload some files in it. Most of the time we assume you know what to do with anything related to PHP and MySQL.
+A Harubi server is a web server using PHP and MySQL. Please note that this getting started does not include tutorials on PHP and MySQL. Here you are assumed to know the relational database concept and to have the administrative rights to a MySQL server since you are going to create a table on it. You also need to have the administrative rights to a PHP-based web server since you are going to upload some files on it. Most of the time we assume you know what to do with anything related to PHP and MySQL.
 
-First of all, create the following sample user.php file. It declares a user model with two actions: *create* and *read*. Later on you are going to create and read some user records.
+We are going to create a user model with create and read actions.
+
+Create the following sample user.php file. It declares a user model with two actions: *create* and *read*. Later on you are going to create and read some user records.
 
 **user.php**
 
@@ -203,7 +205,7 @@ In the *user.php* file the call to *harubi()* initiates the Harubi server. The h
 }
 ```
 
-You need to create a database and a user table in MySQL that matches with the settings above. You may use the following SQL script to create the table.
+You need to create a database and a user table on MySQL that matches with the settings above. You may use the following SQL script to create the table.
 
 ```sql
 CREATE TABLE IF NOT EXISTS `user` (
