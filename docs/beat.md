@@ -68,6 +68,23 @@ function getpermissions_controller($name)
 beat('user', 'getpermissions', 'getpermissions_controller');
 ```
 
+## Conventional Response
+
+A function should return the expected results. However, there are many instances where a function will not be able to return as expected due to many circumstances. When a function will not return the expected results then it should return a status with the reasons. Generally when a function fails to return the expected result then the status is considered as an error.
+
+A controller may not be able to return the expected results all the time. Hence, it should always return a status so that the response to a request, which is handled by the controller, will be in turn handled accordingly.
+
+Harubi published a set of [respond()](respond.md) functions to help with controller returns. It is more conventional than strict. An application may want to handle its responses differently.
+
+The following is an example of a controller return with [respond_ok()](respond.md):
+```php
+// http://example.com/?model=system&action=gettime
+beat('system', 'gettime', function ()
+{	
+	return respond_ok(['time' => time()]);
+});
+```
+
 ## Notes
 
 The beat() function is the backbone of harubi. There should be as many beat() function calls as to the total of all models + actions. A combination of a model and a action should be unique in any beat() function call. There should not be two or more beat() with the same model and action. Otherwise, only the first beat() will be called.
@@ -75,6 +92,7 @@ The beat() function is the backbone of harubi. There should be as many beat() fu
 ## See Also
 
 [blow()](blow.md)
+[respond()](respond.md)
 [create()](create.md)
 [read()](read.md)
 [update()](update.md)
