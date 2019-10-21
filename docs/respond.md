@@ -29,5 +29,45 @@ The error message as string.
 
 An array:
 ```php
-['status'=>1, 'error_code'=>$error_code, 'error_message'=>$error_message]
+['status'=>0, 'error_code'=>$error_code, 'error_message'=>$error_message]
 ```
+
+## respond_system_error()
+```php
+array respond_system_error(int $error_code = -1)
+```
+Response a system error with the error code.
+
+***$error_code***
+
+The error code as any integer value.
+
+### Returns
+
+An array:
+```php
+['status'=>0, 'error_code'=>$error_code, 'error_message'=>'System error']
+```
+
+## respond_ok()
+```php
+array respond_ok(mixed results = NULL)
+```
+Response ok with optional results.
+
+***$results***
+
+The results as any value.
+
+### Returns
+
+An array:
+```php
+['status'=>1]
+['status'=>2, 'results'=>$results]
+```
+
+## See also
+
+[beat()](beat.md)
+[blow()](blow.md)
