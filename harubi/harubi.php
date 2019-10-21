@@ -21,6 +21,8 @@
 // - Added option to collapse read() parameters into an array.
 // - Added option to collapse parameters $type and $op in equ(). See equ().
 // - Added more comments on various functions.
+// 22 October 2019
+// - Deprecate injected method $harubi_permission_controller and attach_permission_controller().
 
 // Literally, *harubi* is a keris with a golden handle, a Malay traditional hand weapon.
 // Beat and blow are offensive hand movements with or without weapon against an opponent.
@@ -63,7 +65,6 @@ $harubi_do_log_querystring = TRUE;
 $harubi_respond_with_logs = FALSE;
 
 // Injected methods
-$harubi_permission_controller = NULL;
 $harubi_cache_func = NULL;
 
 function harubi_log($file, $function, $line, $type, $message)
@@ -260,12 +261,6 @@ function harubi($settings = 'settings.inc')
 		$harubi_table_settings = $settings['tables'];
 	else
 		harubi_log(__FILE__,__FUNCTION__, __LINE__, 'warning', 'No setting for tables');
-}
-
-function attach_permission_controller($controller)
-{
-	global $harubi_permission_controller;
-	$harubi_permission_controller = $controller;
 }
 
 /**
@@ -876,78 +871,46 @@ function route($model, $action, $controller, $use_q = FALSE)
 		$acfunc->invokeArgs(array($model, $action)); // The cache will decide whether to exit().
 	}
 	
-	global $harubi_permission_controller;
-	$has_permission = TRUE;
-	$result = NULL;
-	
-	if ($harubi_permission_controller != NULL &&
-		is_callable($harubi_permission_controller))
-	{
-		$pctrl = new ReflectionFunction($harubi_permission_controller);
-		$status = $pctrl->invokeArgs(array($model, $action));
-		
-		if ($status !== TRUE)
-		{
-			$has_permission = FALSE;
-
-			if ($status !== FALSE)
-			{
-				if (is_array($status))
-					$result = json_encode($status);
-				else
-					$result = $status;
-			}
-		}
-	}
-
 	global $harubi_query;
 	
-	if ($has_permission)
+	$ctrl = new ReflectionFunction($controller);
+	$params = array();
+	$i = 2; // after model and action
+	
+	foreach ($ctrl->getParameters() as $param)
 	{
-		$ctrl = new ReflectionFunction($controller);
-		$params = array();
-		$i = 2; // after model and action
+		$has_val = FALSE;
 		
-		foreach ($ctrl->getParameters() as $param)
+		if ($use_q)
 		{
-			$has_val = FALSE;
-			
-			if ($use_q)
+			if (is_array($harubi_query) && isset($harubi_query[$i]))
 			{
-				if (is_array($harubi_query) && isset($harubi_query[$i]))
-				{
-					$params[] = $harubi_query[$i];
-					$has_val = TRUE;
-				}
-			}
-			elseif (isset($_REQUEST[$param->name]))
-			{
-				$params[] = $_REQUEST[$param->name];
+				$params[] = $harubi_query[$i];
 				$has_val = TRUE;
 			}
-			
-			if (!$has_val) {
-				if ($param->isDefaultValueAvailable())
-					$params[] = $param->getDefaultValue();
-				else
-					$params[] = NULL;
-			}
-			
-			++$i;
 		}
-
-		$ret = $ctrl->invokeArgs($params);
+		elseif (isset($_REQUEST[$param->name]))
+		{
+			$params[] = $_REQUEST[$param->name];
+			$has_val = TRUE;
+		}
 		
-		if (is_array($ret))
-			$result = json_encode($ret);
-		else
-			$result = $ret;
+		if (!$has_val) {
+			if ($param->isDefaultValueAvailable())
+				$params[] = $param->getDefaultValue();
+			else
+				$params[] = NULL;
+		}
+		
+		++$i;
 	}
+
+	$ret = $ctrl->invokeArgs($params);
+	
+	if (is_array($ret))
+		$result = json_encode($ret);
 	else
-	{
-		if ($result == NULL)
-			$result = json_encode(array(respond_error(-1000, "No permission to access $model::$action")));
-	}
+		$result = $ret;
 	
 	if (isset($harubi_do_dump_log) && $harubi_do_dump_log)
 		dump_harubi_logs();
@@ -970,13 +933,7 @@ function route($model, $action, $controller, $use_q = FALSE)
 * 
 * The $controller is expected to return with an assoc array
 * which will then be converted to a json string as the response
-* to the request. Or as is if the return is not an array.
-*
-* Prior to all above, permission to invoke the action will be consulted if
-* $harubi_permission_controller is implemented. The permission controller
-* is expected to take 2 arguments: model and action. And the permission
-* controller is expected to return either TRUE or FALSE. Otherwise, the
-* return value will be taken as is as the response.
+* to the request. Or as-is if the return is not an array.
 * 
 * @param string $model
 * @param string $action
