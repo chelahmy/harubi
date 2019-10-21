@@ -36,11 +36,12 @@ The `mysql` settings looks like the following:
 		"hostname" : "localhost",
 		"username" : "root",
 		"password" : "secret",
-		"database" : "harubi"
+		"database" : "harubi",
+		"prefix"   : ""
 	}
 }
 ```
-It specifies the `hostname`, `username`, `password`, and `database` as required for MySQL connection.
+It specifies the `hostname`, `username`, `password`, and `database` as required for MySQL connection. Set `prefix` to tell harubi that all table names in the database has a prefix: `prefix_tablename`. Table name prefix is useful for a single database to have many applications. Harubi is one of the applcation.
 
 The `tables` settings looks like the following:
 ```json
