@@ -23,6 +23,7 @@
 // - Added more comments on various functions.
 // 22 October 2019
 // - Deprecate injected method $harubi_permission_controller and attach_permission_controller().
+// - Deprecate injected method $harubi_cache_func.
 
 // Literally, *harubi* is a keris with a golden handle, a Malay traditional hand weapon.
 // Beat and blow are offensive hand movements with or without weapon against an opponent.
@@ -65,7 +66,7 @@ $harubi_do_log_querystring = TRUE;
 $harubi_respond_with_logs = FALSE;
 
 // Injected methods
-$harubi_cache_func = NULL;
+
 
 function harubi_log($file, $function, $line, $type, $message)
 {
@@ -861,15 +862,6 @@ function route($model, $action, $controller, $use_q = FALSE)
 {
 	if (!is_callable($controller))
 		return;
-	
-	global $harubi_cache_func;
-	
-	if ($harubi_cache_func != NULL &&
-		is_callable($harubi_cache_func))
-	{
-		$acfunc = new ReflectionFunction($harubi_cache_func);
-		$acfunc->invokeArgs(array($model, $action)); // The cache will decide whether to exit().
-	}
 	
 	global $harubi_query;
 	
