@@ -24,6 +24,7 @@
 // 22 October 2019
 // - Deprecate injected method $harubi_permission_controller and attach_permission_controller().
 // - Deprecate injected method $harubi_cache_func.
+// - Added injection method handlers preset() and toll().
 
 // Literally, *harubi* is a keris with a golden handle, a Malay traditional hand weapon.
 // Beat and blow are offensive hand movements with or without weapon against an opponent.
@@ -59,14 +60,15 @@ $harubi_mysql_settings = NULL;
 $harubi_table_settings = NULL;
 $harubi_query = NULL;
 
+// Injection method handlers
+$harubi_presets = array();
+$harubi_tolls = array();
+
 // Log variables
 $harubi_logs = array();
 $harubi_do_dump_log = TRUE;
 $harubi_do_log_querystring = TRUE;
 $harubi_respond_with_logs = FALSE;
-
-// Injected methods
-
 
 function harubi_log($file, $function, $line, $type, $message)
 {
@@ -855,6 +857,96 @@ function delete($table, $where)
 }
 
 /**
+* Add a preset function to request routers.
+* Prior to calling a controller, beat() and blow() will invoke all presets
+* with parameters $model, $action and $ctrl_params (controller parameters).
+* A preset may alter $ctrl_params.
+* A preset may return an exit status which the router will relay to PHP exit(),
+* or FALSE which the router will ignore.
+*
+* mixed preset_func($model, $action, $ctrl_params)
+*
+*/
+function preset($func)
+{
+	global $harubi_presets;
+	
+	if (is_callable($func))
+		$harubi_presets[] = $func;
+}
+
+function invoke_presets($model, $action, &$ctrl_params)
+{
+	global $harubi_presets;
+	
+	if (!is_array($harubi_presets) || count($harubi_presets) <= 0)
+		return;
+	
+	foreach ($harubi_presets as $preset_func)
+	{
+		if (is_callable($preset_func))
+		{
+			$preset = new ReflectionFunction($preset_func);
+			$status = $preset->invokeArgs(array($model, $action, $ctrl_params));
+			
+			if ($status !== FALSE)
+			{
+				if (is_array($status))
+					exit(json_encode($status));
+				else
+					exit($status);
+			}
+		}
+	}
+}
+
+/**
+* Add a toll function to request routers.
+* After calling a controller, beat() and blow() will invoke all tolls
+* with parameters $model, $action, $ctrl_params (controller parameters)
+* and $ctrl_results (controller results).
+* A toll may alter $ctrl_results.
+* A toll may return an exit status which the router will relay to PHP exit()
+* instead of the controller results, or FALSE which the router will ignore
+* and exit with the controller results.
+*
+* mixed toll_func($model, $action, $ctrl_params, $ctrl_results)
+*
+*/
+function toll($func)
+{
+	global $harubi_tolls;
+	
+	if (is_callable($func))
+		$harubi_tolls[] = $func;
+}
+
+function invoke_tolls($model, $action, $ctrl_params, &$ctrl_results)
+{
+	global $harubi_tolls;
+	
+	if (!is_array($harubi_tolls) || count($harubi_tolls) <= 0)
+		return;
+	
+	foreach ($harubi_tolls as $toll_func)
+	{
+		if (is_callable($toll_func))
+		{
+			$toll = new ReflectionFunction($toll_func);
+			$status = $toll->invokeArgs(array($model, $action, $ctrl_params, $ctrl_results));
+			
+			if ($status !== FALSE)
+			{
+				if (is_array($status))
+					exit(json_encode($status));
+				else
+					exit($status);
+			}
+		}
+	}
+}
+
+/**
 * route() is called by beat() and blow().
 * See descriptions on those functions.
 */
@@ -897,7 +989,9 @@ function route($model, $action, $controller, $use_q = FALSE)
 		++$i;
 	}
 
+	invoke_presets($model, $action, $params);
 	$ret = $ctrl->invokeArgs($params);
+	invoke_tolls($model, $action, $params, $ret);
 	
 	if (is_array($ret))
 		$result = json_encode($ret);
