@@ -242,6 +242,7 @@ Initialization and settings:
 The harubi unique request routers:
 [beat()](docs/beat.md)
 [blow()](docs/blow.md)
+[respond()](docs/respond.md)
 
 CRUD functions:
 [create()](docs/create.md)
