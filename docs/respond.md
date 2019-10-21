@@ -51,7 +51,7 @@ An array:
 
 ## respond_ok()
 ```php
-array respond_ok(mixed results = NULL)
+array respond_ok(mixed $results = NULL)
 ```
 Response ok with optional results.
 
