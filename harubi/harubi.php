@@ -862,17 +862,17 @@ function delete($table, $where)
 * with parameters $model, $action and $ctrl_params (controller parameters).
 * A preset may alter $ctrl_params.
 * A preset may return an exit status which the router will relay to PHP exit(),
-* or FALSE which the router will ignore.
+* or NULL which the router will ignore.
 *
 * mixed preset_func($model, $action, $ctrl_params)
 *
 */
-function preset($func)
+function preset($name, $func)
 {
 	global $harubi_presets;
 	
 	if (is_callable($func))
-		$harubi_presets[] = $func;
+		$harubi_presets[$name] = $func;
 }
 
 function invoke_presets($model, $action, &$ctrl_params)
@@ -882,14 +882,14 @@ function invoke_presets($model, $action, &$ctrl_params)
 	if (!is_array($harubi_presets) || count($harubi_presets) <= 0)
 		return;
 	
-	foreach ($harubi_presets as $preset_func)
+	foreach ($harubi_presets as $preset_name => $preset_func)
 	{
 		if (is_callable($preset_func))
 		{
 			$preset = new ReflectionFunction($preset_func);
 			$status = $preset->invokeArgs(array($model, $action, $ctrl_params));
 			
-			if ($status !== FALSE)
+			if ($status !== NULL)
 			{
 				if (is_array($status))
 					exit(json_encode($status));
@@ -907,18 +907,18 @@ function invoke_presets($model, $action, &$ctrl_params)
 * and $ctrl_results (controller results).
 * A toll may alter $ctrl_results.
 * A toll may return an exit status which the router will relay to PHP exit()
-* instead of the controller results, or FALSE which the router will ignore
+* instead of the controller results, or NULL which the router will ignore
 * and exit with the controller results.
 *
 * mixed toll_func($model, $action, $ctrl_params, $ctrl_results)
 *
 */
-function toll($func)
+function toll($name, $func)
 {
 	global $harubi_tolls;
 	
 	if (is_callable($func))
-		$harubi_tolls[] = $func;
+		$harubi_tolls[$name] = $func;
 }
 
 function invoke_tolls($model, $action, $ctrl_params, &$ctrl_results)
@@ -928,14 +928,14 @@ function invoke_tolls($model, $action, $ctrl_params, &$ctrl_results)
 	if (!is_array($harubi_tolls) || count($harubi_tolls) <= 0)
 		return;
 	
-	foreach ($harubi_tolls as $toll_func)
+	foreach ($harubi_tolls as $toll_name => $toll_func)
 	{
 		if (is_callable($toll_func))
 		{
 			$toll = new ReflectionFunction($toll_func);
 			$status = $toll->invokeArgs(array($model, $action, $ctrl_params, $ctrl_results));
 			
-			if ($status !== FALSE)
+			if ($status !== NULL)
 			{
 				if (is_array($status))
 					exit(json_encode($status));
