@@ -90,7 +90,8 @@ The harubi() function above will load a *settings.inc* file such as the followin
 		"hostname" : "localhost",
 		"username" : "root",
 		"password" : "secret",
-		"database" : "harubi"
+		"database" : "harubi",
+		"prefix"   : ""
 	},
 	
 	"tables" : {
