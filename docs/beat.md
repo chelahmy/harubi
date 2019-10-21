@@ -70,9 +70,9 @@ beat('user', 'getpermissions', 'getpermissions_controller');
 
 ## Conventional Response
 
-A function should return the expected results. However, there are many instances where a function will not be able to return as expected due to many circumstances. When a function will not return the expected results then it should return a status with the reasons. Generally when a function fails to return the expected result then the status is considered as an error.
+A function should return the expected results. However, there are many instances where a function will not be able to return as expected due to many circumstances. Hence, a good function should always return a status with reasons.
 
-A controller may not be able to return the expected results all the time. Hence, it should always return a status so that the response to a request, which is handled by the controller, will be in turn handled accordingly.
+A controller may not always be able to return the expected results. Hence, it must always return a status so that the response to a request, which is handled by the controller, will be in turn handled appropriately.
 
 Harubi published a set of [respond()](respond.md) functions to help with controller returns. It is more conventional than strict. An application may want to handle its responses differently.
 
