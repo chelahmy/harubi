@@ -34,7 +34,7 @@ Nothing, or beat() will exit the process. If the `$controller` is invoked then b
 ## Examples
 
 ```php
-// http://example.com/?model=system&action=gettime
+// http://example.com/time.php?model=system&action=gettime
 beat('system', 'gettime', function ()
 {	
 	return ['time' => time()];
@@ -42,7 +42,7 @@ beat('system', 'gettime', function ()
 ```
 
 ```php
-// http://example.com/?model=user&action=read&name=ali
+// http://example.com/user.php?model=user&action=read&name=ali
 beat('user', 'read', function ($name)
 {	
 	$where = equ('name', $name, 'string');
@@ -53,7 +53,7 @@ beat('user', 'read', function ($name)
 ```
 
 ```php
-// http://example.com/?model=user&action=getpermissions&name=ali
+// http://example.com/user.php?model=user&action=getpermissions&name=ali
 
 function getpermissions_controller($name)
 {
@@ -78,7 +78,7 @@ Harubi published a set of [respond()](respond.md) functions to help with control
 
 The following is an example of a controller return with [respond_ok()](respond.md):
 ```php
-// http://example.com/?model=system&action=gettime
+// http://example.com/time.php?model=system&action=gettime
 beat('system', 'gettime', function ()
 {	
 	return respond_ok(['time' => time()]);
