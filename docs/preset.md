@@ -15,7 +15,7 @@ The name of the preset function.
 
 The preset function with the following prototype:
 ```php
-mixed preset_func(string $model, $string $action, array &$ctrl_args)
+mixed preset_func(string $model, string $action, array &$ctrl_args)
 ```
 ***$model***
 
