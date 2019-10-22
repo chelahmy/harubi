@@ -66,7 +66,9 @@ beat('user', 'read', function ($name)
 	return $records[0];
 });
 ```
+The `name` parameter from the request query string which contain the argument `ali` will be matching the controller `name` parameter. Hence, `ali` will be assigned to the controller `name` parameter as argument.
 
+The response may look like the following:
 ```json
 {
     "name" : "ali",
