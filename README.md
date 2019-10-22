@@ -29,9 +29,9 @@ beat('system', 'gettime', function ()
 	return ['time' => time()];
 });
 ```
-The **[beat()](docs/beat.md)** function is define as follow:
+The [beat()](docs/beat.md) function is defined as follow:
 ```php
-null beat(string $model, string $action, function $controller)
+void beat(string $model, string $action, function $controller)
 ```
 
 The beat() call is pulling three arguments: **$model**, **$action** and **$controller**. In the case above the $model is set to `system`, the $action is set to `gettime`, and the $controller is set to a function closure. The beat() function will test whether the request matches with the specified model and action. If it does than the controller will be invoked. If the controller function has parameters then the values will be retrieved from the request query string. However, in this case the controller has no parameter. The controller is expected to return an array which will be converted into JSON before the beat() function exits. 
