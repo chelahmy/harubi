@@ -51,7 +51,7 @@ Through out the documentation we will use beat() more often then blow() due to t
 
 ### Example 2
 
-The following is another example which the controller has a parameter **name**:
+The following is another example which the controller has a **name** parameter:
 
 ```
 http://example.com/user.php?model=user&action=read&name=ali
