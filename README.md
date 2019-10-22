@@ -76,7 +76,7 @@ beat('user', 'read', function ($name)
 }
 ```
 
-The **[equ()](docs/equ.md)** function sanitizes the *where* equation clause for the SQL *select* query which will be silently generated and issued within the read() function. The sanitization is done on the value of the $name argument and is done so to prevent the database from the infamous *SQL injection* attack.
+The **[equ()](docs/equ.md)** function sanitizes the *where* equation clause for the SQL *select* query which will be silently generated and issued within the read() function. The sanitization is done on the value of the $name argument, and is done so to prevent the database from the infamous *SQL injection* attack.
 
 The **[read()](docs/read.md)** function is one of the implemented CRUD functions in harubi to simplify the database query processes.
 
