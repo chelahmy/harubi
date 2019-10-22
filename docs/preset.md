@@ -1,5 +1,5 @@
-preset()
-========
+preset
+======
 
 A preset is a process run before a controller is invoked. It can stop the controller from being invoked. It can alter the arguments before they are passed to the controller. It can invoke other controllers. And it can do about any other things unrelated to the controller.
 
