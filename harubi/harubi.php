@@ -25,6 +25,8 @@
 // - Deprecate injected method $harubi_permission_controller and attach_permission_controller().
 // - Deprecate injected method $harubi_cache_func.
 // - Added injection method handlers preset() and toll().
+// - Renamed $harubi_do_log_querystring to $harubi_do_log_sql_querystring so that not to
+//   confuse sql query string with url query string.
 
 // Literally, *harubi* is a keris with a golden handle, a Malay traditional hand weapon.
 // Beat and blow are offensive hand movements with or without weapon against an opponent.
@@ -67,7 +69,7 @@ $harubi_tolls = array();
 // Log variables
 $harubi_logs = array();
 $harubi_do_dump_log = TRUE;
-$harubi_do_log_querystring = TRUE;
+$harubi_do_log_sql_querystring = TRUE;
 $harubi_respond_with_logs = FALSE;
 
 function harubi_log($file, $function, $line, $type, $message)
@@ -240,7 +242,7 @@ function harubi($settings = 'settings.inc')
 	if (isset($settings['globals']))
 	{
 		global $harubi_do_dump_log;
-		global $harubi_do_log_querystring;
+		global $harubi_do_log_sql_querystring;
 		global $harubi_respond_with_logs;
 		
 		$globals = $settings['globals'];
@@ -248,8 +250,8 @@ function harubi($settings = 'settings.inc')
 		if (isset($globals['do_dump_log']))
 			$harubi_do_dump_log = $globals['do_dump_log'];
 		
-		if (isset($globals['do_log_querystring']))
-			$harubi_do_log_querystring = $globals['do_log_querystring'];
+		if (isset($globals['do_log_sql_querystring']))
+			$harubi_do_log_sql_querystring = $globals['do_log_querystring'];
 		
 		if (isset($globals['respond_with_logs']))
 			$harubi_respond_with_logs = $globals['respond_with_logs'];
@@ -516,9 +518,9 @@ function create($table, $fields)
 	$query = "INSERT INTO `$table` ($colnames) " . 
 		"VALUES ($colvals);";
 
-	global $harubi_do_log_querystring;
+	global $harubi_do_log_sql_querystring;
 	
-	if (isset($harubi_do_log_querystring) && $harubi_do_log_querystring)
+	if (isset($harubi_do_log_sql_querystring) && $harubi_do_log_sql_querystring)
 		harubi_log(__FILE__,__FUNCTION__, __LINE__, 'notice', 'Inserting a record into MySQL using query: ' . $query);
 		
 	$wait = 0;
@@ -717,9 +719,9 @@ function read($table, $fields = FALSE, $where = FALSE, $order_by = FALSE, $sort 
 		
 	$query .= ";";
 
-	global $harubi_do_log_querystring;
+	global $harubi_do_log_sql_querystring;
 	
-	if (isset($harubi_do_log_querystring) && $harubi_do_log_querystring)
+	if (isset($harubi_do_log_sql_querystring) && $harubi_do_log_sql_querystring)
 		harubi_log(__FILE__,__FUNCTION__, __LINE__, 'notice', 'Selecting a record from MySQL using query: ' . $query);
 		
 	$records = array();
@@ -771,9 +773,9 @@ function update($table, $fields, $where)
 	
 	$query = "UPDATE `$table` SET $set WHERE $where;";
 	
-	global $harubi_do_log_querystring;
+	global $harubi_do_log_sql_querystring;
 	
-	if (isset($harubi_do_log_querystring) && $harubi_do_log_querystring)
+	if (isset($harubi_do_log_sql_querystring) && $harubi_do_log_sql_querystring)
 		harubi_log(__FILE__,__FUNCTION__, __LINE__, 'notice', 'Updating a record into MySQL using query: ' . $query);
 		
 	$status = FALSE;
@@ -824,9 +826,9 @@ function delete($table, $where)
 	else
 		$query = "DELETE FROM `$table`;";
 	
-	global $harubi_do_log_querystring;
+	global $harubi_do_log_sql_querystring;
 	
-	if (isset($harubi_do_log_querystring) && $harubi_do_log_querystring)
+	if (isset($harubi_do_log_sql_querystring) && $harubi_do_log_sql_querystring)
 		harubi_log(__FILE__,__FUNCTION__, __LINE__, 'notice', 'Deleting a record from MySQL using query: ' . $query);
 		
 	$status = FALSE;
