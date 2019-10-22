@@ -243,7 +243,7 @@ Create more user records and read them back randomly for you to get the initial 
 Initialization and settings:
 [harubi()](docs/harubi.md)
 
-The harubi unique request routers:
+The harubi unique request handlers:
 [beat()](docs/beat.md)
 [blow()](docs/blow.md)
 [respond()](docs/respond.md)
