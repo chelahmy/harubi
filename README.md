@@ -254,6 +254,8 @@ Sanitization functions:
 [clean()](docs/clean.md)
 [equ()](docs/equ.md)
 
+Debugging with harubi:
+[debugging](docs/debugging.md)
 
 
 
