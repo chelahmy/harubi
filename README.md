@@ -247,6 +247,8 @@ The harubi unique request routers:
 [beat()](docs/beat.md)
 [blow()](docs/blow.md)
 [respond()](docs/respond.md)
+[preset()](docs/preset.md)
+[toll()](docs/toll.md)
 
 CRUD functions:
 [create()](docs/create.md)
