@@ -115,6 +115,11 @@ function getpermissions_controller($name)
 
 beat('user', 'getpermissions', 'getpermissions_controller');
 ```
+### Presets and Tolls
+
+This is a short introduction to [presets](docs/preset.md) and [tolls](docs/toll.md). It is an advance subject that is worth exploring.
+
+A controller can be injected with presets and tolls to condition the final response to a request. A preset may keep records of a request to a controller, alter a controller arguments, or bypass the controller altogether. A toll may alter a controller results, or bypass the controller results altogether. Hence, presets and tools are opening many possibilities to controller designs.
 
 ## Getting Started
 
