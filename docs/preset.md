@@ -27,13 +27,29 @@ The action name given by the router.
 
 ***&$ctrl_args***
 
-A pass-by-reference array of arguments meant to be passed to the controller. The array can be altered by the preset function.
+A pass-by-reference array of arguments given by the router meant to be passed to the controller. The array can be altered by the preset function.
 
 ## Example
 
+Stopping the controller.
 ```php
-preset('my-preset', function ($model, $action, &$ctrl_args)
+preset('permission', function ($model, $action, &$ctrl_args)
 {
-
+	global $user;
+	
+	if (!$user['authenticated'])
+		return respond_error(1, "Access denied");
 });
 ```
+A preset that returns something will stop the controller from being invoked. If a preset does not return anything then the controller will be invoked.
+
+## Notes
+
+Once a preset is called it means a request is being processed and harubi will exit when the router finish. Hence, always handle a preset from a request point of view. A preset can decide on behalf of a controller. A preset may be there to take a chunk of the controller responsibility. A preset may simplify controller design.
+
+## See Also
+
+[beat()](beat.md)
+[blow()](blow.md)
+
+
