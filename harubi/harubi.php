@@ -27,6 +27,7 @@
 // - Added injection method handlers preset() and toll().
 // - Renamed $harubi_do_log_querystring to $harubi_do_log_sql_querystring so that not to
 //   confuse sql query string with url query string.
+// - Renamed *dump_log to *dump_logs for proper meaning.
 
 // Literally, *harubi* is a keris with a golden handle, a Malay traditional hand weapon.
 // Beat and blow are offensive hand movements with or without weapon against an opponent.
@@ -68,7 +69,7 @@ $harubi_tolls = array();
 
 // Log variables
 $harubi_logs = array();
-$harubi_do_dump_log = TRUE;
+$harubi_do_dump_logs = TRUE;
 $harubi_do_log_sql_querystring = TRUE;
 $harubi_respond_with_logs = FALSE;
 
@@ -183,8 +184,8 @@ function respond_ok($results = null)
 * structure. Default to filename 'settings.inc':
 * {
 *	"globals" : {
-*		"do_dump_log" : true,
-*		"do_log_querystring" : true,
+*		"do_dump_logs" : true,
+*		"do_log_sql_querystring" : true,
 *		"respond_with_logs" : false
 *	},
 *	
@@ -241,14 +242,14 @@ function harubi($settings = 'settings.inc')
 	
 	if (isset($settings['globals']))
 	{
-		global $harubi_do_dump_log;
+		global $harubi_do_dump_logs;
 		global $harubi_do_log_sql_querystring;
 		global $harubi_respond_with_logs;
 		
 		$globals = $settings['globals'];
 		
-		if (isset($globals['do_dump_log']))
-			$harubi_do_dump_log = $globals['do_dump_log'];
+		if (isset($globals['do_dump_logs']))
+			$harubi_do_dump_logs = $globals['do_dump_logs'];
 		
 		if (isset($globals['do_log_sql_querystring']))
 			$harubi_do_log_sql_querystring = $globals['do_log_querystring'];
@@ -1000,7 +1001,7 @@ function route($model, $action, $controller, $use_q = FALSE)
 	else
 		$result = $ret;
 	
-	if (isset($harubi_do_dump_log) && $harubi_do_dump_log)
+	if (isset($harubi_do_dump_logs) && $harubi_do_dump_logs)
 		dump_harubi_logs();
 
 	exit($result);
