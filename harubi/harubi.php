@@ -1,6 +1,6 @@
 <?php
 // harubi.php
-// Harubi - A Model-Beat/Blow-Controller (MBC) framework.
+// Harubi - A Model-Action framework.
 // By Abdullah Daud, chelahmy@gmail.com
 // 14 November 2013
 // - The project start date.
@@ -37,20 +37,26 @@
 // framework minus the view concern. Harubi introduces routing handlers called *beat*
 // and *blow*.
 
-// Harubi is designed to be the servers for rich web client applications. All viewing
-// concerns are delegated to the client side. Harubi handles the models and controllers.
+// Harubi is designed to serve rich client applications. All viewing concerns are delegated
+// to the client side. Harubi handles the models and controllers at the server side.
 // Requests are handled using the beat/blow pattern.
+
+// A model in harubi is not just a wrapper to a relational database table. A model can be
+// as complex as involving multiple database tables. Harubi introduced a model-action
+// pattern. Every request to a harubi service is acting on a model. A request will be
+// routed to a controller that handles a model-action. Hence, every controller in harubi
+// is handling a model-action.
 
 // A beat/blow is a request routing. A beat/blow is expecting a query to contain at least
 // two parameters: a model name and an action to the model. It will invoke the controller
-// for the model::action. Arguments for the controller may be passed along with the
+// for the model-action. Arguments for the controller may be passed along with the
 // query. A controller is passed as a closure to the beat()/blow() function. The beat/blow
 // is expecting the controller to return an associative array which will then be converted
 // to JSON before being passed as the response to the request. See the comment on the
 // beat()/blow() function implementation. If the controller does not return an array then
-// beat()/blow() will return it as is.
+// beat()/blow() will return it as-is.
 
-// On the model side, harubi implements CRUD with object relational mapping (ORM) for MySQL.
+// For the modelling, harubi implements CRUD with object relational mapping (ORM) for MySQL.
 // Every object has a unique ID mapped to the primary index of its table. The create()
 // function returns the new id. The id handling is simplified in the *where* clause. See
 // the where_id() function.
@@ -867,7 +873,7 @@ function delete($table, $where)
 * A preset may return an exit status which the router will relay to PHP exit(),
 * or NULL which the router will ignore.
 *
-* mixed preset_func($model, $action, $ctrl_params)
+* mixed preset_func($model, $action, &$ctrl_params)
 *
 */
 function preset($name, $func)
@@ -913,7 +919,7 @@ function invoke_presets($model, $action, &$ctrl_params)
 * instead of the controller results, or NULL which the router will ignore
 * and exit with the controller results.
 *
-* mixed toll_func($model, $action, $ctrl_params, $ctrl_results)
+* mixed toll_func($model, $action, $ctrl_params, &$ctrl_results)
 *
 */
 function toll($name, $func)
