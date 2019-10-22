@@ -12,7 +12,7 @@ A harubi server responds to a request generally in JSON format.
 A client make a request to a harubi server by specifying at least two arguments in the query string: a **model** and an **action** against the model, together with other related **controller** arguments, if defined. The following is a typical request:
 
 ```
-http://example.com/?model=system&action=gettime
+http://example.com/time.php?model=system&action=gettime
 ```
 
 And the server is expected to respond with a JSON formatted data set, but not necessarily:
@@ -39,7 +39,7 @@ The beat pattern is the harubi unique way to route requests to controllers.
 The beat() function has a cousin which is **[blow()](docs/blow.md)**. They are generally the same except that blow() accepts request in the format which is more url-rewrite friendly:
 
 ```
-http://example.com/?q=system/gettime
+http://example.com/time.php?q=system/gettime
 ```
 
 Through out the documentation we will use beat() more often then blow(), for the beat() request verbosity which is clearer to explain.
@@ -50,7 +50,7 @@ Through out the documentation we will use beat() more often then blow(), for the
 The following is another example which the controller has a parameter **name**:
 
 ```
-http://example.com/?model=user&action=read&name=ali
+http://example.com/user.php?model=user&action=read&name=ali
 ```
 
 ```php
@@ -177,7 +177,7 @@ beat('user', 'read', function ($name)
 });
 ```
 
-In the *user.php* file the call to *harubi()* initiates the harubi server. The harubi() function sets the database according to the settings in the *settings.inc* file below. Please set your MySQL credential accordingly.
+In the *user.php* file the call to *harubi()* initiates harubi. The harubi() function sets the database according to the settings in the *settings.inc* file below. Please set your MySQL credential accordingly.
 
 **settings.inc**
 
@@ -203,7 +203,7 @@ In the *user.php* file the call to *harubi()* initiates the harubi server. The h
 }
 ```
 
-You need to create a database with a *user* table on MySQL that matches with the settings above. You may use the following SQL script to create the table.
+You need to create a database with a *user* table on MySQL similar to the settings above. You may use the following SQL script to create the table.
 
 ```sql
 CREATE TABLE IF NOT EXISTS `user` (
@@ -217,18 +217,18 @@ CREATE TABLE IF NOT EXISTS `user` (
 );
 ```
 
-Make sure you install harubi so that it is accessible via *harubi/harubi.php* as declared in the *user.php* file above.
+The `harubi.php` file is expected to be at *harubi/harubi.php* as declared in the *user.php* file above.
 
 Now, you may create a user record and read it back. Open a browser and make a query with the following syntax. Make sure to replace *example.com* with your host name.
 
 ```
-http://example.com/?model=user&action=create&name=ali&password=secret
+http://example.com/user.php?model=user&action=create&name=ali&password=secret
 ```
 
 Then, you may read the record back using the following syntax:
 
 ```
-http://example.com/?model=user&action=read&name=ali
+http://example.com/user.php?model=user&action=read&name=ali
 ```
 
 Create more user records and read them back randomly for you to get the initial experience of using a harubi server. You will not be doing things like that often. Most of the time the requests to a harubi server will be done by its client applications.
@@ -254,6 +254,8 @@ Sanitization functions:
 [clean()](docs/clean.md)
 [equ()](docs/equ.md)
 
+Debugging with harubi:
+[debugging](docs/debugging.md)
 
 
 
