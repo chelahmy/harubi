@@ -38,7 +38,7 @@ The beat() call is pulling three arguments: **$model**, **$action** and **$contr
 
 **The beat process explained:** Whenever the $model and $action matched, the beat() function will invoke the $controller and wait for it to return, convert the return array into JSON, or leave it as-is whenever the return value is not an array, and then force PHP to exit with the JSON/as-is return value as the response. Otherwise, the execution will continue looking for the next beat() calls.
 
-The beat **model-action->controller** pattern is the harubi unique way to route requests to controllers.
+The beat **model-action -> controller** pattern is the harubi unique way to route requests to controllers.
 
 The beat() function has a cousin which is **[blow()](docs/blow.md)**. They are generally the same except that blow() accepts request in the format which is more url-rewrite friendly:
 
