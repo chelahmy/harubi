@@ -88,7 +88,13 @@ null dump_harubi_logs()
 ```
 Dump the memory logs into `harubi.log` file. The file will be overwritten with the latest logs.
 
+## Debugging
 
+Use the logging functions for debugging. Most of the logging functions are nice with the harubi standard response. The PHP `echo` and `print` constructs will add up to harubi response and make the response invalid.
+
+## See Also
+
+[harubi()](harubi.md)
 
 
 
