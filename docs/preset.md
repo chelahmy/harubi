@@ -41,7 +41,7 @@ preset('permission', function ($model, $action, &$ctrl_args)
 		return respond_error(1, "Access denied");
 });
 ```
-A preset that returns something will stop the controller from being invoked. If a preset does not return anything then the controller will be invoked.
+A preset that returns something will stop the controller from being invoked. The return value will be used as the response to the request that called the preset. If a preset does not return anything then the controller will be invoked.
 
 ## Notes
 
