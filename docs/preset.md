@@ -2,7 +2,9 @@ Preset
 ======
 A preset is a process run before a controller is invoked. It can stop the controller from being invoked. It can alter the arguments before they are passed to the controller. It can invoke other controllers. And it can do about any other things unrelated to the controller.
 
-All preset functions must be registered prior to calling any routing function ([beat()](beat.md) or [blow()](blow.md)). A preset function is registered using the preset() function:
+All preset functions must be registered prior to calling any routing function ([beat()](beat.md) or [blow()](blow.md)). A preset function is registered using preset() function.
+
+## preset()
 ```php
 void preset(string $name, function $preset_func)
 ```
