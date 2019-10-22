@@ -1,7 +1,7 @@
 blow()
 ======
 
-A harubi request router similar to [beat()](beat.md). The different is only on the request query string which blow() operates on, which is more friendly to url-rewrite:
+A harubi request router similar to [beat()](beat.md). The different is only on the request query string which blow() operates on, which is more friendly to url-rewriting:
 ```
 http://example.com/?q=model/action/controller-param1/...
 ```
