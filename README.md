@@ -261,7 +261,7 @@ Sanitization functions:
 [equ()](docs/equ.md)
 
 Debugging with harubi:
-[debugging](docs/debugging.md)
+[debugging functions](docs/debugging.md)
 
 
 
