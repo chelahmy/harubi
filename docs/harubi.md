@@ -21,13 +21,26 @@ The `globals` settings looks like the following:
 ```json
 {
 	"globals" : {
-		"do_dump_log" : true,
-		"do_log_querystring" : true,
+		"do_dump_logs" : true,
+		"do_log_sql_querystring" : true,
 		"respond_with_logs" : false
 	}
 }
 ```
 It defines default values of global variables used by harubi.
+
+***do_dump_logs***
+
+When set to true then harubi logs will be written to `harubi.log` file on exit.
+
+***do_log_sql_querystring***
+
+When set to true then harubi will log all sql query strings used to query the database.
+
+***respond_with_logs***
+
+When set to true then harubi will append harubi logs to all responses whenever [respond()](respond.md) functions are used. It will add `logs` item in the JSON response string. **WARNING**: Use this feature only during development. It may expose the system to vulnerability.
+
 
 The `mysql` settings looks like the following:
 ```json
@@ -55,7 +68,7 @@ The `tables` settings looks like the following:
 	}
 }
 ```
-You have to list all tables used in harubi, and map all fields to harubi field types: `string`, `integer`, or `float`.
+You have to list all tables used in harubi, and map all table fields to harubi field types: `string`, `integer`, or `float`.
 
 
 ## Parameters
@@ -82,7 +95,7 @@ The harubi() function above will load a *settings.inc* file such as the followin
 {
 	"globals" : {
 		"do_dump_log" : true,
-		"do_log_querystring" : true,
+		"do_log_sql_querystring" : true,
 		"respond_with_logs" : false
 	},
 
