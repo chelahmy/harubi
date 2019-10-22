@@ -98,7 +98,7 @@ beat('user', 'getpermissions', function ($name)
  
 ## Controller
 
-In harubi, a controller is usually a closure implemention wrapped in a beat() call. Every controller implements a model's action. It is the duty of a controller to make all necessary database queries and form the response for the action as requested. The controller is expected to return an array of records, but not necessarilly.
+In harubi, a controller is usually a closure implemention wrapped in a beat() call. Every controller implements a model's action. It is the duty of a controller to make all necessary database queries and form the response for the action as requested. The controller is expected to return results in an array, but not necessarilly.
 
 If a controller is a closure then you may be tricked to see that a beat() is a controller such as in the model example above, but the beat() is not the controller. A controller can be implemented as a function for reuse in other beat() calls.
 
