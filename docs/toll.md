@@ -1,6 +1,6 @@
 Toll
 ====
-A toll is a process run after a controller is invoked. It can alter or replace the controller results. It can do about any other things.
+A toll is a process run after a controller was invoked. It can alter or replace the controller results. It can do about any other things.
 
 All toll functions must be injected prior to calling any routing function ([beat()](beat.md) or [blow()](blow.md)). A toll function is injected using toll() function.
 
