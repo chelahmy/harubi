@@ -79,7 +79,7 @@ Get the memory log array.
 ```php
 null print_harubi_logs()
 ```
-Print the memory logs as PHP output. It does not play nice with harubi standard response. use this function only for active debugging.
+Print the memory logs as PHP output. It does not play nice with harubi standard response. Use this function only for active debugging.
 
 ### dump_harubi_logs()
 
