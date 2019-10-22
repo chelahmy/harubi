@@ -60,5 +60,36 @@ The user defined type of the log.
 
 The user defined message for the log.
 
+### harubi_log_debug()
+
+```php
+null harubi_log_debug(mixed $line, string $message)
+```
+Similar to `harubi_log()` where the `$type` is set to `'debug'` and both `$file` and `$funtion` are unset. Use this function only for active debugging.
+
+### get_harubi_logs()
+
+```php
+array get_harubi_logs()
+```
+Get the memory log array.
+
+### print_harubi_logs()
+
+```php
+null print_harubi_logs()
+```
+Print the memory logs as PHP output. It does not play nice with harubi standard response. use this function only for active debugging.
+
+### dump_harubi_logs()
+
+```php
+null dump_harubi_logs()
+```
+Dump the memory logs into `harubi.log` file. The file will be overwritten with the latest logs.
+
+
+
+
 
 
