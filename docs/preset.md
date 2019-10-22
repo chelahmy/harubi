@@ -54,6 +54,7 @@ Once a preset is called it means a request is being processed and harubi will ex
 
 ## See Also
 
+[toll](toll.md)
 [beat()](beat.md)
 [blow()](blow.md)
 
