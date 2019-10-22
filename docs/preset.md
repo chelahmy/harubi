@@ -16,7 +16,7 @@ The name of the preset function.
 
 ***$preset_func***
 
-The preset function with the following prototype:
+The preset function to be injected. It must be in the form of the following prototype:
 ```php
 mixed preset_func(string $model, string $action, array &$ctrl_args)
 ```
