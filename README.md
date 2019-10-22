@@ -15,7 +15,7 @@ A client make a request to a harubi server by specifying at least two arguments 
 http://example.com/time.php?model=system&action=gettime
 ```
 
-And the server is expected to respond with a JSON formatted data set, but not necessarily:
+And the server is expected to respond with a JSON formatted dataset, but not necessarily:
 
 ```json
 {"time":1426835075}
