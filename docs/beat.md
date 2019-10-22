@@ -6,7 +6,7 @@ A harubi request router.
 ## Description
 
 ```php
-void beat(string $model, string $action, string $controller)
+void beat(string $model, string $action, function $controller)
 ```
 
 The beat() function compares `$_REQUEST['model']` with `$model` and `$_REQUEST['action']` with `$action`. If they both matched then the `$controller` will be invoked and beat() will exit with the return value of the `$controller`. If the `$controller` returns an array then beat() will exit with a JSON converted content of the array. Otherwise, beat() will return whatever the `$controller` returns as-is.
