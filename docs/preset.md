@@ -32,7 +32,7 @@ The action name given by the router.
 
 ***&$ctrl_args***
 
-A *pass-by-reference* array of arguments given by the router meant to be passed to the controller. The array can be altered by the preset function.
+A *pass-by-reference* array of arguments given by the router meant to be passed to the controller. The array can be altered by the preset function because they are passed to the controller.
 
 ## Example
 
