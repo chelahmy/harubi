@@ -866,14 +866,15 @@ function delete($table, $where)
 }
 
 /**
-* Add a preset function to request routers.
-* Prior to calling a controller, beat() and blow() will invoke all presets
-* with parameters $model, $action and $ctrl_params (controller parameters).
-* A preset may alter $ctrl_params.
-* A preset may return an exit status which the router will relay to PHP exit(),
-* or NULL which the router will ignore.
+* Inject a preset function to request routers (beat() and blow()).
+* Prior to calling a controller, a router will invoke all presets
+* with arguments $model, $action and $ctrl_args (controller arguments).
+* A preset may alter $ctrl_args. A preset may return, and the return values
+* will be taken as the response to the request, skipping the controller.
+* There could be a chain of preset functions. Each may alter the $ctrl_args.
+* And the last one may return.
 *
-* mixed preset_func($model, $action, &$ctrl_params)
+* mixed preset_func(string $model, string $action, array &$ctrl_args)
 *
 */
 function preset($name, $func)
@@ -884,7 +885,7 @@ function preset($name, $func)
 		$harubi_presets[$name] = $func;
 }
 
-function invoke_presets($model, $action, &$ctrl_params)
+function invoke_presets($model, $action, &$ctrl_args)
 {
 	global $harubi_presets;
 	
@@ -896,30 +897,25 @@ function invoke_presets($model, $action, &$ctrl_params)
 		if (is_callable($preset_func))
 		{
 			$preset = new ReflectionFunction($preset_func);
-			$status = $preset->invokeArgs(array($model, $action, $ctrl_params));
+			$status = $preset->invokeArgs(array($model, $action, $ctrl_args));
 			
 			if ($status !== NULL)
-			{
-				if (is_array($status))
-					exit(json_encode($status));
-				else
-					exit($status);
-			}
+				return $status;
 		}
 	}
 }
 
 /**
-* Add a toll function to request routers.
-* After calling a controller, beat() and blow() will invoke all tolls
-* with parameters $model, $action, $ctrl_params (controller parameters)
-* and $ctrl_results (controller results).
-* A toll may alter $ctrl_results.
-* A toll may return an exit status which the router will relay to PHP exit()
-* instead of the controller results, or NULL which the router will ignore
-* and exit with the controller results.
+* Inject a toll function to request routers (beat() and blow()).
+* After calling a controller, the router will invoke all tolls
+* with arguments $model, $action, $ctrl_args (controller arguments)
+* and $ctrl_results (controller results). A toll may alter $ctrl_results.
+* A toll may return, and the return values will be taken as the response
+* to the request, ignoring the controller results. There could be a chain
+* of toll functions. Each may alter the $ctrl_results. And the last one may
+* return.
 *
-* mixed toll_func($model, $action, $ctrl_params, &$ctrl_results)
+* mixed toll_func(string $model, string $action, array $ctrl_args, array &$ctrl_results)
 *
 */
 function toll($name, $func)
@@ -930,7 +926,7 @@ function toll($name, $func)
 		$harubi_tolls[$name] = $func;
 }
 
-function invoke_tolls($model, $action, $ctrl_params, &$ctrl_results)
+function invoke_tolls($model, $action, $ctrl_args, &$ctrl_results)
 {
 	global $harubi_tolls;
 	
@@ -942,15 +938,10 @@ function invoke_tolls($model, $action, $ctrl_params, &$ctrl_results)
 		if (is_callable($toll_func))
 		{
 			$toll = new ReflectionFunction($toll_func);
-			$status = $toll->invokeArgs(array($model, $action, $ctrl_params, $ctrl_results));
+			$status = $toll->invokeArgs(array($model, $action, $ctrl_args, $ctrl_results));
 			
 			if ($status !== NULL)
-			{
-				if (is_array($status))
-					exit(json_encode($status));
-				else
-					exit($status);
-			}
+				return $status;
 		}
 	}
 }
@@ -967,7 +958,7 @@ function route($model, $action, $controller, $use_q = FALSE)
 	global $harubi_query;
 	
 	$ctrl = new ReflectionFunction($controller);
-	$params = array();
+	$args = array();
 	$i = 2; // after model and action
 	
 	foreach ($ctrl->getParameters() as $param)
@@ -978,29 +969,36 @@ function route($model, $action, $controller, $use_q = FALSE)
 		{
 			if (is_array($harubi_query) && isset($harubi_query[$i]))
 			{
-				$params[] = $harubi_query[$i];
+				$args[] = $harubi_query[$i];
 				$has_val = TRUE;
 			}
 		}
 		elseif (isset($_REQUEST[$param->name]))
 		{
-			$params[] = $_REQUEST[$param->name];
+			$args[] = $_REQUEST[$param->name];
 			$has_val = TRUE;
 		}
 		
 		if (!$has_val) {
 			if ($param->isDefaultValueAvailable())
-				$params[] = $param->getDefaultValue();
+				$args[] = $param->getDefaultValue();
 			else
-				$params[] = NULL;
+				$args[] = NULL;
 		}
 		
 		++$i;
 	}
 
-	invoke_presets($model, $action, $params);
-	$ret = $ctrl->invokeArgs($params);
-	invoke_tolls($model, $action, $params, $ret);
+	$ret = invoke_presets($model, $action, $args);
+	
+	if ($ret === NULL)
+	{
+		$ret = $ctrl->invokeArgs($args);
+		$tret = invoke_tolls($model, $action, $args, $ret);
+		
+		if ($tret !== NULL)
+			$ret = $tret;
+	}
 	
 	if (is_array($ret))
 		$result = json_encode($ret);
