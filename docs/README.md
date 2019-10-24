@@ -1,7 +1,9 @@
 Harubi Documentation
 ====================
 
-Harubi is a model-action framework based on PHP and MySQL. It is a MVC-like framework for back-end server, minus the View concern which belongs to the front-end. The model-action pattern is about slicing a model into actions which are carried out by controllers. The author wrote [a blog post on the model-action framework](https://chelahmy.blogspot.com/2019/10/model-action-framework.html).
+Harubi is a model-action framework implemented on PHP and MySQL. It is a MVC-like framework for back-end server, minus the View concern which belongs to the front-end. The model-action pattern is about slicing a model into actions which are carried out by controllers. The author wrote [a blog post on the model-action framework](https://chelahmy.blogspot.com/2019/10/model-action-framework.html).
+
+Where does harubi name come from? Harubi is a type of [keris](https://educalingo.com/en/dic-ms/keris) with a golden handle. Keris is a [Malay](https://en.wikipedia.org/wiki/Malays_(ethnic_group)) traditional defensive weapon. 
 
 ## Harubi functions in alphabetical order
 
