@@ -29,7 +29,7 @@ The name of the controller function. The controller function can have any number
 
 ## Return Values
 
-Nothing, or beat() will exit the process. If the `$controller` is invoked then beat() will call the PHP exit() function after it returns.
+Nothing. beat() will echo the response string with the `$controller` results, and terminate the routing.
 
 ## Examples
 
