@@ -1,6 +1,6 @@
 <?php
 
-// Use PHP development server
+// Use the PHP development server
 // $ php -S localhost:8000
 // and browse http://localhost:8000
 
