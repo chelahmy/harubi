@@ -82,6 +82,8 @@ $harubi_tolls = array();
 $harubi_logs = array();
 $harubi_do_dump_logs = TRUE;
 $harubi_do_log_sql_querystring = TRUE;
+$harubi_do_log_presets = TRUE;
+$harubi_do_log_tolls = TRUE;
 $harubi_respond_with_logs = FALSE;
 
 function harubi_log($file, $function, $line, $type, $message)
@@ -120,7 +122,7 @@ function print_harubi_logs()
 function dump_harubi_logs()
 {
 	global $harubi_logs;
-	file_put_contents('harubi.log', json_encode($harubi_logs));
+	file_put_contents('harubi.log', json_encode($harubi_logs, JSON_PRETTY_PRINT));
 }
 
 /**
@@ -255,6 +257,8 @@ function harubi($settings = 'settings.inc')
 	{
 		global $harubi_do_dump_logs;
 		global $harubi_do_log_sql_querystring;
+		global $harubi_do_log_presets;
+		global $harubi_do_log_tolls;
 		global $harubi_respond_with_logs;
 		
 		$globals = $settings['globals'];
@@ -264,6 +268,12 @@ function harubi($settings = 'settings.inc')
 		
 		if (isset($globals['do_log_sql_querystring']))
 			$harubi_do_log_sql_querystring = $globals['do_log_sql_querystring'];
+		
+		if (isset($globals['do_log_presets']))
+			$harubi_do_log_presets = $globals['do_log_presets'];
+		
+		if (isset($globals['do_log_tolls']))
+			$harubi_do_log_tolls = $globals['do_log_tolls'];
 		
 		if (isset($globals['respond_with_logs']))
 			$harubi_respond_with_logs = $globals['respond_with_logs'];
@@ -548,6 +558,8 @@ function create($table, $fields)
 		if (mysqli_query($db, $query) === TRUE)
 		{
 			$id = mysqli_insert_id($db);
+			harubi_log(__FILE__,__FUNCTION__, __LINE__, 'notice', "Inserted a record with id = $id into MySQL using query:  $query");
+			
 			break;
 		}
 		else
@@ -556,8 +568,11 @@ function create($table, $fields)
 
 	mysqli_close($db);
 
-	if ( $id == -2)
+	if ($id == -2)
 		harubi_log(__FILE__,__FUNCTION__, __LINE__, 'error', 'Failed to insert a record into MySQL using query: ' . $query);
+
+	if ($id == -3)
+		harubi_log(__FILE__,__FUNCTION__, __LINE__, 'error', 'Failed to get the record id after inserted into MySQL using query: ' . $query);
 
 	return intval($id);	
 }
@@ -893,6 +908,7 @@ function preset($name, $func)
 function invoke_presets($model, $action, &$ctrl_args)
 {
 	global $harubi_presets;
+	global $harubi_do_log_presets;
 	
 	if (!is_array($harubi_presets) || count($harubi_presets) <= 0)
 		return;
@@ -902,7 +918,10 @@ function invoke_presets($model, $action, &$ctrl_args)
 		if (is_callable($preset_func))
 		{
 			$preset = new ReflectionFunction($preset_func);
-			$status = $preset->invokeArgs(array($model, $action, $ctrl_args));
+			$status = $preset->invokeArgs(array($model, $action, &$ctrl_args));
+			
+			if (isset($harubi_do_log_presets) && $harubi_do_log_presets)
+				harubi_log(__FILE__,__FUNCTION__, __LINE__, 'notice', "Invoked preset '$preset_name' on model = '$model' and action = '$action'");
 			
 			if ($status !== NULL)
 				return $status;
@@ -934,6 +953,7 @@ function toll($name, $func)
 function invoke_tolls($model, $action, $ctrl_args, &$ctrl_results)
 {
 	global $harubi_tolls;
+	global $harubi_do_log_tolls;
 	
 	if (!is_array($harubi_tolls) || count($harubi_tolls) <= 0)
 		return;
@@ -943,7 +963,10 @@ function invoke_tolls($model, $action, $ctrl_args, &$ctrl_results)
 		if (is_callable($toll_func))
 		{
 			$toll = new ReflectionFunction($toll_func);
-			$status = $toll->invokeArgs(array($model, $action, $ctrl_args, $ctrl_results));
+			$status = $toll->invokeArgs(array($model, $action, $ctrl_args, &$ctrl_results));
+			
+			if (isset($harubi_do_log_tolls) && $harubi_do_log_tolls)
+				harubi_log(__FILE__,__FUNCTION__, __LINE__, 'notice', "Invoked toll '$toll_name' on model = '$model' and action = '$action'");
 			
 			if ($status !== NULL)
 				return $status;
