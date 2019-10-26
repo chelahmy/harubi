@@ -5,15 +5,15 @@
 		"respond_with_logs" : false
 	},
 
-    "mysql" : {
-        "hostname" : "localhost",
-        "username" : "root",
-        "password" : "secret",
-        "database" : "harubi",
-        "prefix"   : ""
-    },
+	"mysql" : {
+		"hostname" : "localhost",
+		"username" : "root",
+		"password" : "secret",
+		"database" : "harubi",
+		"prefix"   : ""
+	},
 
-    "tables" : {
+	"tables" : {
 
-    }
+	}
 }
