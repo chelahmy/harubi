@@ -30,6 +30,7 @@
 // - Renamed *dump_log to *dump_logs for proper meaning.
 // 26 October 2019
 // - Added request() function for internal request.
+// - Changed router() finishing from exit() to echo to facilitate internal request().
 
 // Literally, *harubi* is a keris with a golden handle, a Malay traditional hand weapon.
 // Beat and blow are offensive hand movements with or without weapon against an opponent.
@@ -70,6 +71,8 @@
 $harubi_mysql_settings = NULL;
 $harubi_table_settings = NULL;
 $harubi_query = NULL;
+
+$harubi_routing_done = FALSE;
 
 // Injection method handlers
 $harubi_presets = array();
@@ -954,6 +957,11 @@ function invoke_tolls($model, $action, $ctrl_args, &$ctrl_results)
 */
 function route($model, $action, $controller, $use_q = FALSE)
 {
+	global $harubi_routing_done;
+
+	if ($harubi_routing_done)
+		return;
+		
 	if (!is_callable($controller))
 		return;
 	
@@ -1010,14 +1018,15 @@ function route($model, $action, $controller, $use_q = FALSE)
 	if (isset($harubi_do_dump_logs) && $harubi_do_dump_logs)
 		dump_harubi_logs();
 
-	exit($result);
+	echo $result;
+	$harubi_routing_done = TRUE;
 }
 
 /**
-* beat() passes a request to the $controller and calls exit() to exit
-* the entire script with a response to the request. It will do nothing
-* if the $model and $action do not match. If $model is NULL then it
-* takes any, so does $action.
+* beat() passes a request to the $controller which will echo back the
+* response string and cause other routing calls to be skipped. It will
+* do nothing if the $model and $action do not match. If $model is NULL
+* then it will take any value, so does $action.
 *  
 * Expecting request arguments 'model', 'action' and those
 * matching with the $controller parameters.
@@ -1038,6 +1047,11 @@ function route($model, $action, $controller, $use_q = FALSE)
 */
 function beat($model, $action, $controller)  
 {
+	global $harubi_routing_done;
+
+	if ($harubi_routing_done)
+		return;
+		
 	if (!isset($_REQUEST['model']) || !isset($_REQUEST['action']))
 		return;
 
@@ -1061,6 +1075,11 @@ function beat($model, $action, $controller)
 */
 function blow($model, $action, $controller)
 {
+	global $harubi_routing_done;
+
+	if ($harubi_routing_done)
+		return;
+		
 	global $harubi_query;
 	
 	if ($harubi_query == NULL)
@@ -1141,8 +1160,12 @@ function request($module, $model, $action, $ctrl_args)
 		$xq = $_REQUEST['q'];
 	
 	$_REQUEST['q'] = $q;
-	
+
+	global $harubi_routing_done;
+	$xrd = $harubi_routing_done;
+	$harubi_routing_done = FALSE;
 	require $module;
+	$harubi_routing_done = $xrd;
 	
 	$contents = ob_get_contents();
 	ob_end_clean();
