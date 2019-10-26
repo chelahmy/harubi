@@ -263,7 +263,7 @@ function harubi($settings = 'settings.inc')
 			$harubi_do_dump_logs = $globals['do_dump_logs'];
 		
 		if (isset($globals['do_log_sql_querystring']))
-			$harubi_do_log_sql_querystring = $globals['do_log_querystring'];
+			$harubi_do_log_sql_querystring = $globals['do_log_sql_querystring'];
 		
 		if (isset($globals['respond_with_logs']))
 			$harubi_respond_with_logs = $globals['respond_with_logs'];
@@ -1014,6 +1014,8 @@ function route($model, $action, $controller, $use_q = FALSE)
 		$result = json_encode($ret);
 	else
 		$result = $ret;
+	
+	global $harubi_do_dump_logs;
 	
 	if (isset($harubi_do_dump_logs) && $harubi_do_dump_logs)
 		dump_harubi_logs();
