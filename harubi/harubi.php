@@ -28,6 +28,8 @@
 // - Renamed $harubi_do_log_querystring to $harubi_do_log_sql_querystring so that not to
 //   confuse sql query string with url query string.
 // - Renamed *dump_log to *dump_logs for proper meaning.
+// 26 October 2019
+// - Added request() function for internal request.
 
 // Literally, *harubi* is a keris with a golden handle, a Malay traditional hand weapon.
 // Beat and blow are offensive hand movements with or without weapon against an opponent.
@@ -1089,6 +1091,70 @@ function blow($model, $action, $controller)
 		return;
 	
 	route($model, $action, $controller, TRUE);
+}
+
+/**
+* Make a harubi internal request to a module through require().
+* It will inject temporary request arguments into $_REQUEST
+* and reinstate before exit. It will require() the module and
+* capture the output buffer which is expected to contain the
+* response string to the request.
+* Params:
+*	string $module	: PHP module/file name.
+*   string $model	: model name.
+*   string $action	: action name.
+*	array $ctrl_args: controller arguments in the form of [$name => $value].
+* Return:
+*	The response string.
+*/
+function request($module, $model, $action, $ctrl_args)
+{
+	ob_start();
+	
+	$xmodel = null;
+	$xaction = null;
+	$xq = null;
+	
+	if (isset($_REQUEST['model']))
+		$xmodel = $_REQUEST['model'];
+	
+	if (isset($_REQUEST['action']))
+		$xaction = $_REQUEST['action'];
+	 
+	$_REQUEST['model'] = $model;
+	$_REQUEST['action'] = $action;
+	$q = $model . '/' . $action;
+	$xargs = [];
+	
+	foreach ($ctrl_args as $name => $val)
+	{
+		if (isset($_REQUEST[$name]))
+			$xargs[$name] = $_REQUEST[$name];
+		else
+			$xargs[$name] = null;
+		
+		$_REQUEST[$name] = $val;
+		$q .= '/' . $val; 
+	}
+	
+	if (isset($_REQUEST['q']))
+		$xq = $_REQUEST['q'];
+	
+	$_REQUEST['q'] = $q;
+	
+	require $module;
+	
+	$contents = ob_get_contents();
+	ob_end_clean();
+	
+	$_REQUEST['model'] = $xmodel;
+	$_REQUEST['action'] = $xaction; 
+	$_REQUEST['q'] = $xq;
+	
+	foreach ($xargs as $name => $val)
+		$_REQUEST[$name] = $val;
+		
+	return $contents;
 }
 
 ?>
