@@ -1052,17 +1052,17 @@ function beat($model, $action, $controller)
 	if ($harubi_routing_done)
 		return;
 		
-	if (!isset($_REQUEST['model']) || !isset($_REQUEST['action']))
-		return;
-
-	if ($model == NULL)
-		$model = $_REQUEST['model'];
+	if ($model != NULL)
+	{
+		if (!isset($_REQUEST['model']) || $model != $_REQUEST['model'])
+			return;
+	}
 		
-	if ($action == NULL)
-		$action = $_REQUEST['action'];
-	
-	if ($model != $_REQUEST['model'] || $action != $_REQUEST['action'])
-		return;
+	if ($action != NULL)
+	{
+		if (!isset($_REQUEST['action']) || $action != $_REQUEST['action'])
+			return;
+	}
 	
 	route($model, $action, $controller);
 }
@@ -1082,32 +1082,32 @@ function blow($model, $action, $controller)
 		
 	global $harubi_query;
 	
-	if ($harubi_query == NULL)
-	{
-		if (!isset($_REQUEST['q']))
-			return;
-	
+	if (isset($_REQUEST['q']))
 		$harubi_query = explode("/", $_REQUEST['q']);
+	else
+		$harubi_query = [];
+
+	if (isset($harubi_query) && isset($harubi_query[0]))
+		$m = trim($harubi_query[0]);
+	else
+		$m = "";
+
+	if (isset($harubi_query) && isset($harubi_query[1]))
+		$a = trim($harubi_query[1]);
+	else
+		$a = "";
+		
+	if ($model != NULL)
+	{
+		if ($model != $m)
+			return;
 	}
-
-	if (isset($harubi_query[0]))
-		$m = $harubi_query[0];
-	else
-		$m = NULL;
-
-	if (isset($harubi_query[1]))
-		$a = $harubi_query[1];
-	else
-		$a = NULL;
 		
-	if ($model == NULL && $m != NULL)
-		$model = $m;	
-		
-	if ($action == NULL && $a != NULL)
-		$action = $a;	
-	
-	if ($model != $m || $action != $a)
-		return;
+	if ($action != NULL)
+	{
+		if ($action != $a)
+			return;	
+	}
 	
 	route($model, $action, $controller, TRUE);
 }
