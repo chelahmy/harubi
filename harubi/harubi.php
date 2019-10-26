@@ -571,9 +571,6 @@ function create($table, $fields)
 	if ($id == -2)
 		harubi_log(__FILE__,__FUNCTION__, __LINE__, 'error', 'Failed to insert a record into MySQL using query: ' . $query);
 
-	if ($id == -3)
-		harubi_log(__FILE__,__FUNCTION__, __LINE__, 'error', 'Failed to get the record id after inserted into MySQL using query: ' . $query);
-
 	return intval($id);	
 }
 
