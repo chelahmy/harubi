@@ -1,10 +1,19 @@
 <?php
+// User Model Test
+// By Abdullah Daud
+// 27 October 2019
+
+// NOTE: Harubi application testing framework is a work-in-progress.
+
+// Use the PHP development server for testing:
+// $ php -S localhost:8000
 
 require '../../../../harubi/harubi.php'; 
 
 harubi();
 
 $test_auto_num = 0;
+$test_expected = 5;
 
 function echo_br($str)
 {
@@ -23,9 +32,24 @@ function as_array($json)
 	return json_decode($json, TRUE);
 }
 
-function not_ok($results)
+function with_status($results, $matching)
 {
-	return $results == NULL || $results['status'] < 1;
+	if (!is_array($results) || !is_array($matching))
+		return FALSE;
+		
+	if (!isset($results['status']) || !isset($matching['status']))
+		return FALSE;
+		
+	if ($results['status'] == $matching['status'])
+	{
+		if (!isset($results['error_code']))
+			return TRUE;
+			
+		if (isset($matching['error_code']) && $matching['error_code'] == $results['error_code'])
+			return TRUE;
+	}	
+		
+	return FALSE;		
 }
 
 function testing($line = 0)
@@ -33,9 +57,23 @@ function testing($line = 0)
 	global $test_auto_num;
 	++$test_auto_num;
 	
-	return "Testing #$test_auto_num [line $line]: ";
+	return "<br/><font color='blue'>Testing #$test_auto_num</font> [line $line]: ";
 }
 
+function failed($msg)
+{
+	return "<font color='red'>Failed:</font> $msg";
+}
+
+function success($msg)
+{
+	return "<font color='green'>Success:</font> $msg";
+}
+
+/**
+* Check that the database defined in the settings exists.
+* Return the database name.
+*/
 function check_db()
 {
 	global $harubi_mysql_settings;
@@ -44,7 +82,7 @@ function check_db()
 	$db = connect_db();
 
 	if ($db === FALSE)
-		die("Failed to connect to the database <strong>$dbn</strong>.");
+		die(failed("connecting to the database <strong>$dbn</strong>."));
 
 	echo_br("Database exists: <strong>$dbn</strong>");
 	mysqli_close($db);
@@ -52,6 +90,9 @@ function check_db()
 	return $dbn;
 }
 
+/**
+* Create a table if not exists, or empty the table and reset auto-increment. 
+*/
 function prepare_table($dbname, $tblname, $tblsql)
 {
 	if (!table_exists($tblname))
@@ -59,7 +100,7 @@ function prepare_table($dbname, $tblname, $tblsql)
 		$db = connect_db();
 
 		if ($db === FALSE)
-			die("Failed to connect to the database <strong>$dbname</strong>.");
+			die(failed("connecting to the database <strong>$dbname</strong>."));
 
 		echo_br("Creating table <strong>$tblname</strong>...");
 		$sql = file_get_contents($tblsql);	
@@ -67,7 +108,7 @@ function prepare_table($dbname, $tblname, $tblsql)
 		mysqli_close($db);
 	
 		if (!table_exists('user'))
-			die("Failed to create table <strong>$tblname</strong>.");
+			die(failed("creating table <strong>$tblname</strong>."));
 		
 		echo_br("Table <strong>$tblname</strong> created.");
 	}
@@ -78,7 +119,7 @@ function prepare_table($dbname, $tblname, $tblsql)
 		$db = connect_db();
 
 		if ($db === FALSE)
-			die("Failed to connect to the database <strong>$dbname</strong>.");
+			die(failed("connecting to the database <strong>$dbname</strong>."));
 		
 		mysqli_query($db, "ALTER TABLE `$tblname` AUTO_INCREMENT = 1");	
 		mysqli_close($db);
@@ -87,7 +128,7 @@ function prepare_table($dbname, $tblname, $tblsql)
 	echo_br("Table exists: <strong>$tblname</strong>");
 }
 
-//--------------------------------------------------------
+//========================================================
 echo "<h1>Testing User Model</h1>";
 
 $dbname = check_db();
@@ -102,17 +143,15 @@ $user		= 'admin';
 $password	= 'secret';
 $email		= 'admin@example.com';
 
-echo_br("Signing-up a super-user <strong>$user</strong>...");
+echo_br("Signing-up super-user <strong>$user</strong>...");
 $_SESSION['last_reg'] = 0; // bypass sign-up delay
 $results = as_array(request('../user.php', 'user', 'signup', ['name' => $user, 'password' => $password, 'email' => $email]));
+print_pre($results);
 
-if (not_ok($results))
-{
-	print_pre($results);
-	die("Failed to sign-up super-user <strong>$user</strong>");
-}
+if (!with_status($results, ['status' => 1]))
+	die(failed("signing-up super-user <strong>$user</strong>"));
 
-echo_br("Signed-up super-user <strong>$user</strong>");
+echo_br(success("signed-up super-user <strong>$user</strong>"));
 
 //--------------------------------------------------------
 echo_br(testing(__LINE__) . "user::signup #2");
@@ -121,17 +160,15 @@ $user		= 'jamal';
 $password	= 'vision';
 $email		= 'jamal@example.com';
 
-echo_br("Signing-up a user <strong>$user</strong>...");
+echo_br("Signing-up new user <strong>$user</strong>...");
 $_SESSION['last_reg'] = 0; // bypass sign-up delay
 $results = as_array(request('../user.php', 'user', 'signup', ['name' => $user, 'password' => $password, 'email' => $email]));
+print_pre($results);
 
-if (not_ok($results))
-{
-	print_pre($results);
-	die("Failed to sign-up user <strong>$user</strong>");
-}
+if (!with_status($results, ['status' => 1]))
+	die(failed("signing-up new user <strong>$user</strong>"));
 
-echo_br("Signed-up user <strong>$user</strong>");
+echo_br(success("signed-up new user <strong>$user</strong>"));
 
 //--------------------------------------------------------
 echo_br(testing(__LINE__) . "user::signin non-user");
@@ -141,14 +178,12 @@ $password	= 'wisdom';
 
 echo_br("Signing-in non-user <strong>$user</strong>...");
 $results = as_array(request('../user.php', 'user', 'signin', ['name' => $user, 'password' => $password]));
+print_pre($results);
 
-if (!not_ok($results))
-{
-	print_pre($results);
-	die("Failed by allowing to sign-in non-user <strong>$user</strong>");
-}
+if (!with_status($results, ['status' => 0, 'error_code' => 1]))
+	die(failed("allowing non-user <strong>$user</strong> to sign-in"));
 
-echo_br("Signing-in non-user <strong>$user</strong> failed as expected");
+echo_br(success("signing-in non-user <strong>$user</strong> failed as expected"));
 
 //--------------------------------------------------------
 echo_br(testing(__LINE__) . "user::signin existing user");
@@ -158,14 +193,12 @@ $password	= 'vision';
 
 echo_br("Signing-in existing user <strong>$user</strong>...");
 $results = as_array(request('../user.php', 'user', 'signin', ['name' => $user, 'password' => $password]));
+print_pre($results);
 
-if (not_ok($results))
-{
-	print_pre($results);
-	die("Failed to sign-in existing user <strong>$user</strong>");
-}
+if (!with_status($results, ['status' => 1]))
+	die(failed("signing-in existing user <strong>$user</strong>"));
 
-echo_br("Signed-in existing user <strong>$user</strong>");
+echo_br(success("signed-in existing user <strong>$user</strong>"));
 
 //--------------------------------------------------------
 echo_br(testing(__LINE__) . "user::signin super-user");
@@ -175,16 +208,16 @@ $password	= 'secret';
 
 echo_br("Signing-in super-user <strong>$user</strong>...");
 $results = as_array(request('../user.php', 'user', 'signin', ['name' => $user, 'password' => $password]));
+print_pre($results);
 
-if (not_ok($results))
-{
-	print_pre($results);
-	die("Failed to sign-in super-user <strong>$user</strong>");
-}
+if (!with_status($results, ['status' => 1]))
+	die(failed("signing-in super-user <strong>$user</strong>"));
 
-echo_br("Signed-in super-user <strong>$user</strong>");
+echo_br(success("signed-in super-user <strong>$user</strong>"));
 
 
+//========================================================
+echo "<br/>Tests total: <font color='blue'><strong>$test_auto_num</strong></font> of $test_expected";
 
 
 	

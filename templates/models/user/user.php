@@ -15,7 +15,10 @@
 // and be require_once().
 require_once 'user_helper.php';
 
-session_start();
+$sid = session_id();
+
+if (!is_string($sid) || strlen($sid) <= 0)
+	session_start();
 
 preset('permission_authenticated_user', function ($model, $action, &$ctrl_args)
 {
