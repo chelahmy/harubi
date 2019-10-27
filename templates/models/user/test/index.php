@@ -13,7 +13,7 @@ require '../../../../harubi/harubi.php';
 harubi();
 
 $test_auto_num = 0;
-$test_expected = 5;
+$tests_expected = 5;
 
 function echo_br($str)
 {
@@ -217,7 +217,7 @@ success("signed-in super-user <strong>$user</strong>");
 
 
 //========================================================
-echo "<br/>Tests total: <font color='blue'><strong>$test_auto_num</strong></font> of $test_expected";
+echo "<br/>Tests total: <font color='blue'><strong>$test_auto_num</strong></font> of $tests_expected";
 
 
 	
