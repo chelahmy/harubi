@@ -52,12 +52,12 @@ function with_status($results, $matching)
 	return FALSE;		
 }
 
-function testing($line = 0)
+function testing($line = 0, $msg = '')
 {
 	global $test_auto_num;
 	++$test_auto_num;
 	
-	return "<br/><font color='blue'>Testing #$test_auto_num</font> [line $line]: ";
+	echo "<br/><font color='blue'>Testing #$test_auto_num</font> [line $line]: $msg<br/>";
 }
 
 function failed($msg)
@@ -67,7 +67,7 @@ function failed($msg)
 
 function success($msg)
 {
-	return "<font color='green'>Success:</font> $msg";
+	echo "<font color='green'>Success:</font> $msg<br/>";
 }
 
 /**
@@ -137,7 +137,7 @@ prepare_table($dbname, 'user', '../user.sql');
 session_start();
 
 //--------------------------------------------------------
-echo_br(testing(__LINE__) . "user::signup #1 first user/super-user");
+testing(__LINE__, "user::signup #1 first user/super-user");
 
 $user		= 'admin';
 $password	= 'secret';
@@ -151,10 +151,10 @@ print_pre($results);
 if (!with_status($results, ['status' => 1]))
 	die(failed("signing-up super-user <strong>$user</strong>"));
 
-echo_br(success("signed-up super-user <strong>$user</strong>"));
+success("signed-up super-user <strong>$user</strong>");
 
 //--------------------------------------------------------
-echo_br(testing(__LINE__) . "user::signup #2");
+testing(__LINE__, "user::signup #2");
 
 $user		= 'jamal';
 $password	= 'vision';
@@ -168,10 +168,10 @@ print_pre($results);
 if (!with_status($results, ['status' => 1]))
 	die(failed("signing-up new user <strong>$user</strong>"));
 
-echo_br(success("signed-up new user <strong>$user</strong>"));
+success("signed-up new user <strong>$user</strong>");
 
 //--------------------------------------------------------
-echo_br(testing(__LINE__) . "user::signin non-user");
+testing(__LINE__, "user::signin non-user");
 
 $user		= 'ali';
 $password	= 'wisdom';
@@ -183,10 +183,10 @@ print_pre($results);
 if (!with_status($results, ['status' => 0, 'error_code' => 1]))
 	die(failed("allowing non-user <strong>$user</strong> to sign-in"));
 
-echo_br(success("signing-in non-user <strong>$user</strong> failed as expected"));
+success("signing-in non-user <strong>$user</strong> failed as expected");
 
 //--------------------------------------------------------
-echo_br(testing(__LINE__) . "user::signin existing user");
+testing(__LINE__, "user::signin existing user");
 
 $user		= 'jamal';
 $password	= 'vision';
@@ -198,10 +198,10 @@ print_pre($results);
 if (!with_status($results, ['status' => 1]))
 	die(failed("signing-in existing user <strong>$user</strong>"));
 
-echo_br(success("signed-in existing user <strong>$user</strong>"));
+success("signed-in existing user <strong>$user</strong>");
 
 //--------------------------------------------------------
-echo_br(testing(__LINE__) . "user::signin super-user");
+testing(__LINE__, "user::signin super-user");
 
 $user		= 'admin';
 $password	= 'secret';
@@ -213,7 +213,7 @@ print_pre($results);
 if (!with_status($results, ['status' => 1]))
 	die(failed("signing-in super-user <strong>$user</strong>"));
 
-echo_br(success("signed-in super-user <strong>$user</strong>"));
+success("signed-in super-user <strong>$user</strong>");
 
 
 //========================================================
