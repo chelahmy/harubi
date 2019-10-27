@@ -1,0 +1,12 @@
+{
+    "tables" : {
+		"user" : {
+			"id" : "int",
+			"name" : "string",
+			"password" : "string",
+			"email" : "string",
+			"created_utc" : "int",
+			"updated_utc" : "int"
+		}
+	}
+}
