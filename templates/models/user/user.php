@@ -26,7 +26,7 @@ preset('permission_authenticated_user', function ($model, $action, &$ctrl_args)
 		return;
 	
 	if (get_user_id() <= 0)
-		respond_error(1000, "You have not signed in.");
+		return respond_error(1000, "You have not signed in.");
 });
 
 preset('permission_super_user', function ($model, $action, &$ctrl_args)
@@ -37,7 +37,7 @@ preset('permission_super_user', function ($model, $action, &$ctrl_args)
 	if (is_super_user())
 		return;
 		
-	respond_error(1001, "Access denied.");
+	return respond_error(1001, "Access denied.");
 });
 
 preset('permission_change_user', function ($model, $action, &$ctrl_args)
