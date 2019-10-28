@@ -13,9 +13,9 @@ require '../../../../harubi/harubi.php';
 harubi();
 
 $test_auto_num = 0;
-$tests_expected = 7;
+$tests_expected = 10;
 
-function echo_br($str)
+function echo_br($str = '')
 {
 	echo $str, '<br/>';
 }
@@ -169,7 +169,7 @@ function test($case)
 		$ctrl = $case['controller'];
 	else
 		$ctrl = [];
-
+	
 	if (isset($case['messages']))
 	{
 		$msgs = $case['messages'];
@@ -186,8 +186,22 @@ function test($case)
 	
 	if (isset($starting_msg))
 		echo_br(msg($starting_msg, $ctrl));
+		
+	$ctrl_cnt = count($ctrl);
+	 	
+	if ($ctrl_cnt > 0)
+	{
+		if ($ctrl_cnt > 1)
+			echo_br("Arguments:");
+		else	
+			echo_br("Argument:");
+		
+		print_pre($ctrl);
+	}
 	
 	$response = as_array(request($module, $model, $action, $ctrl));
+	
+	echo_br("Response:");
 	print_pre($response);
 
 	if (!with_status($response, $exp) || !with_results($response, $exp_results))
@@ -281,66 +295,50 @@ prepare_table($dbname, 'user', '../user.sql');
 session_start();
 
 //--------------------------------------------------------
-$module = '../user.php';
-$model  = 'user';
-$action = 'signup';
-
-testing(__LINE__, "$model::$action", "first user/super-user");
-
-$user		= 'admin';
-$password	= 'secret';
-$email		= 'admin@example.com';
-
-echo_br("Signing-up super-user <strong>$user</strong>...");
 $_SESSION['last_reg'] = 0; // bypass sign-up delay
-$results = as_array(request($module, $model, $action, ['name' => $user, 'password' => $password, 'email' => $email]));
-print_pre($results);
-
-if (!with_status($results, ['status' => 1]))
-	die(failed("signing-up super-user <strong>$user</strong>"));
-
-success("signed-up super-user <strong>$user</strong>");
+test([
+	'line' => __LINE__,
+	'module' => '../user.php',
+	'model' => 'user',
+	'action' => 'signup',
+	'controller' => [
+		'name' => 'admin',
+		'password' => 'secret',
+		'email' => 'admin@example.com'
+	],
+	'comment' => 'first user/super-user',
+	'expectation' => [
+		'status' => 1
+	],
+	'messages' => [
+		'starting' => 'Signing-up super-user <strong>%name%</strong>...',
+		'success' => 'signed-up super-user <strong>%name%</strong> ',
+		'failed' => 'signing-up super-user <strong>%name%</strong>'
+	]
+]);
 
 //--------------------------------------------------------
-$module = '../user.php';
-$model  = 'user';
-$action = 'signup';
-
-testing(__LINE__, "$model::$action");
-
-$user		= 'jamal';
-$password	= 'vision';
-$email		= 'jamal@example.com';
-
-echo_br("Signing-up new user <strong>$user</strong>...");
 $_SESSION['last_reg'] = 0; // bypass sign-up delay
-$results = as_array(request($module, $model, $action, ['name' => $user, 'password' => $password, 'email' => $email]));
-print_pre($results);
-
-if (!with_status($results, ['status' => 1]))
-	die(failed("signing-up new user <strong>$user</strong>"));
-
-success("signed-up new user <strong>$user</strong>");
-
-//--------------------------------------------------------
-$module = '../user.php';
-$model  = 'user';
-$action = 'signin';
-
-testing(__LINE__, "$model::$action", "non-user");
-
-$user		= 'ali';
-$password	= 'wisdom';
-
-echo_br("Signing-in non-user <strong>$user</strong>...");
-$results = as_array(request($module, $model, $action, ['name' => $user, 'password' => $password]));
-print_pre($results);
-
-if (!with_status($results, ['status' => 0, 'error_code' => 1]))
-	die(failed("allowing non-user <strong>$user</strong> to sign-in"));
-
-success("signing-in non-user <strong>$user</strong> failed as expected");
-
+test([
+	'line' => __LINE__,
+	'module' => '../user.php',
+	'model' => 'user',
+	'action' => 'signup',
+	'controller' => [
+		'name' => 'jamal',
+		'password' => 'vision',
+		'email' => 'jamal@example.com'
+	],
+	'comment' => '',
+	'expectation' => [
+		'status' => 1
+	],
+	'messages' => [
+		'starting' => 'Signing-up new user <strong>%name%</strong>...',
+		'success' => 'signed-up new user <strong>%name%</strong> ',
+		'failed' => 'signing-up new user <strong>%name%</strong>'
+	]
+]);
 
 //--------------------------------------------------------
 test([
@@ -349,8 +347,8 @@ test([
 	'model' => 'user',
 	'action' => 'signin',
 	'controller' => [
-		'user' => 'abu',
-		'password' => 'morning'
+		'name' => 'ali',
+		'password' => 'wisdom'
 	],
 	'expectation' => [
 		'status' => 0,
@@ -358,158 +356,162 @@ test([
 	],
 	'comment' => 'non-user',
 	'messages' => [
-		'starting' => 'Signing-in non-user <strong>%user%</strong>...',
-		'success' => 'signing-in non-user <strong>%user%</strong> failed as expected',
-		'failes' => 'allowing non-user <strong>%user%</strong> to sign-in'
+		'starting' => 'Signing-in non-user <strong>%name%</strong>...',
+		'success' => 'signing-in non-user <strong>%name%</strong> failed as expected',
+		'failed' => 'allowing non-user <strong>%name%</strong> to sign-in'
 	]
 ]);
 
 //--------------------------------------------------------
-$module = '../user.php';
-$model  = 'user';
-$action = 'read_own';
-
-testing(__LINE__, "$model::$action", "without signing-in");
-
-$user		= 'jamal';
-
-echo_br("Reading user <strong>$user</strong> own record without signing-in...");
-$results = as_array(request($module, $model, $action));
-print_pre($results);
-
-if (!with_status($results, ['status' => 0, 'error_code' => 1000]))
-	die(failed("allowing to read user <strong>$user</strong> own record without signing-in"));
-
-if ($harubi_last_preset_invoked !== FALSE)
-	notice("preset <strong>$harubi_last_preset_invoked</strong> was applied");
-
-success("reading user <strong>$user</strong> own record without signing-in failed as expected");
-
-//--------------------------------------------------------
-$module = '../user.php';
-$model  = 'user';
-$action = 'update_own';
-
-testing(__LINE__, "$model::$action", "without signing-in");
-
-$user		= 'jamal';
-$password	= 'vision1';
-$email		= 'jamal_one@example.com';
-
-echo_br("Updating user <strong>$user</strong> own record without signing-in...");
-$results = as_array(request($module, $model, $action, ['password' => $password, 'email' => $email]));
-print_pre($results);
-
-if (!with_status($results, ['status' => 0, 'error_code' => 1000]))
-	die(failed("allowing to update user <strong>$user</strong> own record without signing-in"));
-
-if ($harubi_last_preset_invoked !== FALSE)
-	notice("preset <strong>$harubi_last_preset_invoked</strong> was applied");
-
-success("updating user <strong>$user</strong> own record without signing-in failed as expected");
+test([
+	'line' => __LINE__,
+	'module' => '../user.php',
+	'model' => 'user',
+	'action' => 'read_own',
+	'controller' => [
+		'name' => 'jamal'
+	],
+	'comment' => 'without signing-in',
+	'expectation' => [
+		'status' => 0,
+		'error_code' => 1000
+	],
+	'messages' => [
+		'starting' => 'Reading user <strong>%name%</strong> own record without signing-in...',
+		'success' => 'reading user <strong>%name%</strong> own record without signing-in failed as expected',
+		'failed' => 'allowing to read user <strong>%name%</strong> own record without signing-in'
+	]
+]);
 
 //--------------------------------------------------------
-$module = '../user.php';
-$model  = 'user';
-$action = 'read';
-
-testing(__LINE__, "$model::$action", "without signing-in");
-
-$user		= 'jamal';
-
-echo_br("Reading user <strong>$user</strong> record without signing-in...");
-$results = as_array(request($module, $model, $action, ['user' => $user]));
-print_pre($results);
-
-if (!with_status($results, ['status' => 0, 'error_code' => 1000]))
-	die(failed("allowing to read user <strong>$user</strong> record without signing-in"));
-
-if ($harubi_last_preset_invoked !== FALSE)
-	notice("preset <strong>$harubi_last_preset_invoked</strong> was applied");
-
-success("reading user <strong>$user</strong> record without signing-in failed as expected");
-
-//--------------------------------------------------------
-$module = '../user.php';
-$model  = 'user';
-$action = 'update';
-
-testing(__LINE__, "$model::$action", "without signing-in");
-
-$user		= 'jamal';
-$password	= 'vision1';
-$email		= 'jamal_one@example.com';
-
-echo_br("Updating user <strong>$user</strong> record without signing-in...");
-$results = as_array(request($module, $model, $action, ['user' => $user, 'password' => $password, 'email' => $email]));
-print_pre($results);
-
-if (!with_status($results, ['status' => 0, 'error_code' => 1000]))
-	die(failed("allowing to update user <strong>$user</strong> record without signing-in"));
-
-if ($harubi_last_preset_invoked !== FALSE)
-	notice("preset <strong>$harubi_last_preset_invoked</strong> was applied");
-
-success("updating user <strong>$user</strong> record without signing-in failed as expected");
+test([
+	'line' => __LINE__,
+	'module' => '../user.php',
+	'model' => 'user',
+	'action' => 'update_own',
+	'controller' => [
+		'name' => 'jamal',
+		'password' => 'vision1',
+		'email' => 'jamal_one@example.com'
+	],
+	'comment' => 'without signing-in',
+	'expectation' => [
+		'status' => 0,
+		'error_code' => 1000
+	],
+	'messages' => [
+		'starting' => 'Updating user <strong>%name%</strong> own record without signing-in...',
+		'success' => 'updating user <strong>%name%</strong> own record without signing-in failed as expected',
+		'failed' => 'allowing to update user <strong>%name%</strong> own record without signing-in'
+	]
+]);
 
 //--------------------------------------------------------
-$module = '../user.php';
-$model  = 'user';
-$action = 'delete';
-
-testing(__LINE__, "$model::$action", "without signing-in");
-
-$user		= 'jamal';
-
-echo_br("Deleting user <strong>$user</strong> record without signing-in...");
-$results = as_array(request($module, $model, $action, ['user' => $user]));
-print_pre($results);
-
-if (!with_status($results, ['status' => 0, 'error_code' => 1000]))
-	die(failed("allowing to delete user <strong>$user</strong> record without signing-in"));
-
-if ($harubi_last_preset_invoked !== FALSE)
-	notice("preset <strong>$harubi_last_preset_invoked</strong> was applied");
-
-success("deleting user <strong>$user</strong> record without signing-in failed as expected");
-
-//--------------------------------------------------------
-$module = '../user.php';
-$model  = 'user';
-$action = 'signin';
-
-testing(__LINE__, "$model::$action", "existing user");
-
-$user		= 'jamal';
-$password	= 'vision';
-
-echo_br("Signing-in existing user <strong>$user</strong>...");
-$results = as_array(request($module, $model, $action, ['name' => $user, 'password' => $password]));
-print_pre($results);
-
-if (!with_status($results, ['status' => 1]))
-	die(failed("signing-in existing user <strong>$user</strong>"));
-
-success("signed-in existing user <strong>$user</strong>");
+test([
+	'line' => __LINE__,
+	'module' => '../user.php',
+	'model' => 'user',
+	'action' => 'read',
+	'controller' => [
+		'name' => 'jamal'
+	],
+	'comment' => 'without signing-in',
+	'expectation' => [
+		'status' => 0,
+		'error_code' => 1000
+	],
+	'messages' => [
+		'starting' => 'Reading user <strong>%name%</strong> record without signing-in...',
+		'success' => 'reading user <strong>%name%</strong> record without signing-in failed as expected',
+		'failed' => 'allowing to read user <strong>%name%</strong> record without signing-in'
+	]
+]);
 
 //--------------------------------------------------------
-$module = '../user.php';
-$model  = 'user';
-$action = 'signin';
+test([
+	'line' => __LINE__,
+	'module' => '../user.php',
+	'model' => 'user',
+	'action' => 'update',
+	'controller' => [
+		'name' => 'jamal',
+		'password' => 'vision1',
+		'email' => 'jamal_one@example.com'
+	],
+	'comment' => 'without signing-in',
+	'expectation' => [
+		'status' => 0,
+		'error_code' => 1000
+	],
+	'messages' => [
+		'starting' => 'Updating user <strong>%name%</strong> record without signing-in...',
+		'success' => 'updating user <strong>%name%</strong> record without signing-in failed as expected',
+		'failed' => 'allowing to update user <strong>%name%</strong> record without signing-in'
+	]
+]);
 
-testing(__LINE__, "$model::$action", "super-user");
+//--------------------------------------------------------
+test([
+	'line' => __LINE__,
+	'module' => '../user.php',
+	'model' => 'user',
+	'action' => 'delete',
+	'controller' => [
+		'name' => 'jamal'
+	],
+	'comment' => 'without signing-in',
+	'expectation' => [
+		'status' => 0,
+		'error_code' => 1000
+	],
+	'messages' => [
+		'starting' => 'Deleting user <strong>%name%</strong> record without signing-in...',
+		'success' => 'deleting user <strong>%name%</strong> record without signing-in failed as expected',
+		'failed' => 'allowing to delete user <strong>%name%</strong> record without signing-in'
+	]
+]);
 
-$user		= 'admin';
-$password	= 'secret';
+//--------------------------------------------------------
+test([
+	'line' => __LINE__,
+	'module' => '../user.php',
+	'model' => 'user',
+	'action' => 'signin',
+	'controller' => [
+		'name' => 'jamal',
+		'password' => 'vision',
+	],
+	'comment' => 'existing user',
+	'expectation' => [
+		'status' => 1
+	],
+	'messages' => [
+		'starting' => 'Signing-in existing user <strong>%name%</strong>...',
+		'success' => 'signed-in existing user <strong>%name%</strong>',
+		'failed' => 'signing-in existing user <strong>%name%</strong>'
+	]
+]);
 
-echo_br("Signing-in super-user <strong>$user</strong>...");
-$results = as_array(request($module, $model, $action, ['name' => $user, 'password' => $password]));
-print_pre($results);
-
-if (!with_status($results, ['status' => 1]))
-	die(failed("signing-in super-user <strong>$user</strong>"));
-
-success("signed-in super-user <strong>$user</strong>");
+//--------------------------------------------------------
+test([
+	'line' => __LINE__,
+	'module' => '../user.php',
+	'model' => 'user',
+	'action' => 'signin',
+	'controller' => [
+		'name' => 'admin',
+		'password' => 'secret',
+	],
+	'comment' => 'super-user',
+	'expectation' => [
+		'status' => 1
+	],
+	'messages' => [
+		'starting' => 'Signing-in super-user <strong>%name%</strong>...',
+		'success' => 'signed-in super-user <strong>%name%</strong>',
+		'failed' => 'signing-in super-user <strong>%name%</strong>'
+	]
+]);
 
 
 //========================================================
