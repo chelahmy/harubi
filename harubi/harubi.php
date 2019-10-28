@@ -31,6 +31,8 @@
 // 26 October 2019
 // - Added request() function for internal request.
 // - Changed router() finishing from exit() to echo to facilitate internal request().
+// 28 October 2019
+// - Cached the names of the last preset and toll invoked.
 
 // Literally, *harubi* is a keris with a golden handle, a Malay traditional hand weapon.
 // Beat and blow are offensive hand movements with or without weapon against an opponent.
@@ -77,6 +79,8 @@ $harubi_routing_done = FALSE;
 // Injection method handlers
 $harubi_presets = array();
 $harubi_tolls = array();
+$harubi_last_preset_invoked = FALSE;
+$harubi_last_toll_invoked = FALSE;
 
 // Log variables
 $harubi_logs = array();
@@ -905,7 +909,10 @@ function preset($name, $func)
 function invoke_presets($model, $action, &$ctrl_args)
 {
 	global $harubi_presets;
+	global $harubi_last_preset_invoked;
 	global $harubi_do_log_presets;
+	
+	$harubi_last_preset_invoked = FALSE;
 	
 	if (!is_array($harubi_presets) || count($harubi_presets) <= 0)
 		return;
@@ -921,7 +928,10 @@ function invoke_presets($model, $action, &$ctrl_args)
 				harubi_log(__FILE__,__FUNCTION__, __LINE__, 'notice', "Invoked preset '$preset_name' on model = '$model' and action = '$action'");
 			
 			if ($status !== NULL)
+			{
+				$harubi_last_preset_invoked = $preset_name;
 				return $status;
+			}
 		}
 	}
 }
@@ -950,7 +960,10 @@ function toll($name, $func)
 function invoke_tolls($model, $action, $ctrl_args, &$ctrl_results)
 {
 	global $harubi_tolls;
+	global $harubi_last_toll_invoked;
 	global $harubi_do_log_tolls;
+	
+	$harubi_last_toll_invoked = FALSE;
 	
 	if (!is_array($harubi_tolls) || count($harubi_tolls) <= 0)
 		return;
@@ -966,7 +979,10 @@ function invoke_tolls($model, $action, $ctrl_args, &$ctrl_results)
 				harubi_log(__FILE__,__FUNCTION__, __LINE__, 'notice', "Invoked toll '$toll_name' on model = '$model' and action = '$action'");
 			
 			if ($status !== NULL)
+			{
+				$harubi_last_toll_invoked = $toll_name;
 				return $status;
+			}
 		}
 	}
 }
@@ -1148,7 +1164,7 @@ function blow($model, $action, $controller)
 * Return:
 *	The response string.
 */
-function request($module, $model, $action, $ctrl_args)
+function request($module, $model, $action, $ctrl_args = [])
 {
 	ob_start();
 	
@@ -1173,7 +1189,7 @@ function request($module, $model, $action, $ctrl_args)
 			$xargs[$name] = $_REQUEST[$name];
 		else
 			$xargs[$name] = null;
-		
+	
 		$_REQUEST[$name] = $val;
 		$q .= '/' . $val; 
 	}
