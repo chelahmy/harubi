@@ -1,7 +1,9 @@
-
 User Model Test
 ===============
-Create `settings.inc` file with the following content:
+
+The test script for User Model is implemented in [index.php](https://github.com/chelahmy/harubi/blob/master/templates/models/user/test/index.php).
+
+The test needs to access a database and create `user` table. Please create a `settings.inc` file with the following content:
 ```json
 {
 	"globals" : {
@@ -32,9 +34,9 @@ Create `settings.inc` file with the following content:
 	}
 }
 ```
-And edit mysql credentials according to your settings.
+And edit `mysql` credentials according to your settings.
 
-Use the PHP development server and navigate to http://localhost:8000
+Use the PHP development server and navigate to http://localhost:8000. It will run the test script in the `index.php` file.
 
 ```
 $ php -S localhost:8000
