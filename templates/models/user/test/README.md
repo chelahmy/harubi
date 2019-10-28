@@ -1,9 +1,7 @@
 User Model Test
 ===============
 
-The test script for User Model is implemented in [index.php](https://github.com/chelahmy/harubi/blob/master/templates/models/user/test/index.php).
-
-The test needs to access a database and create `user` table. Please create a `settings.inc` file with the following content:
+The test script for User Model is implemented in [index.php](https://github.com/chelahmy/harubi/blob/master/templates/models/user/test/index.php). The test needs to access database and create `user` table. Please create `settings.inc` file with the following content:
 ```json
 {
 	"globals" : {
