@@ -14,12 +14,13 @@ harubi();
 //========================================================
 echo "<h1>Testing User Model</h1>";
 
-tests_expected(10);
+tests_expected(15);
 
 $dbname = check_db();
 prepare_table($dbname, 'user', '../user.sql');
 
 session_start(); // This user model uses PHP session
+unset($_SESSION['user']); // Reset user session
 
 //--------------------------------------------------------
 $_SESSION['last_reg'] = 0; // bypass sign-up delay
@@ -216,6 +217,114 @@ test([
 		'starting' => 'Signing-in existing user <strong>%name%</strong>...',
 		'success' => 'signed-in existing user <strong>%name%</strong>',
 		'failed' => 'signing-in existing user <strong>%name%</strong>'
+	]
+]);
+
+//--------------------------------------------------------
+test([
+	'line' => __LINE__,
+	'module' => '../user.php',
+	'model' => 'user',
+	'action' => 'read_own',
+	'controller' => [
+		'name' => 'jamal'
+	],
+	'comment' => '',
+	'expectation' => [
+		'status' => 2,
+		'results' => [
+			'name' => 'jamal',
+			'email' => 'jamal@example.com'
+		]
+	],
+	'messages' => [
+		'starting' => 'Reading user <strong>%name%</strong> own record...',
+		'success' => 'read user <strong>%name%</strong> own record',
+		'failed' => 'reading user <strong>%name%</strong> own record'
+	]
+]);
+
+//--------------------------------------------------------
+test([
+	'line' => __LINE__,
+	'module' => '../user.php',
+	'model' => 'user',
+	'action' => 'update_own',
+	'controller' => [
+		'name' => 'jamal',
+		'password' => 'vision1',
+		'email' => 'jamal_one@example.com'
+	],
+	'comment' => '',
+	'expectation' => [
+		'status' => 1
+	],
+	'messages' => [
+		'starting' => 'Updating user <strong>%name%</strong> own record...',
+		'success' => 'updated user <strong>%name%</strong> own record',
+		'failed' => 'updating user <strong>%name%</strong> own record'
+	]
+]);
+
+//--------------------------------------------------------
+test([
+	'line' => __LINE__,
+	'module' => '../user.php',
+	'model' => 'user',
+	'action' => 'signout',
+	'controller' => [
+		'name' => 'jamal'
+	],
+	'comment' => '',
+	'expectation' => [
+		'status' => 1
+	],
+	'messages' => [
+		'starting' => 'Signing-out user <strong>%name%</strong>...',
+		'success' => 'signed-out user <strong>%name%</strong>',
+		'failed' => 'signing-out user <strong>%name%</strong>'
+	]
+]);
+
+//--------------------------------------------------------
+test([
+	'line' => __LINE__,
+	'module' => '../user.php',
+	'model' => 'user',
+	'action' => 'read_own',
+	'controller' => [
+		'name' => 'jamal'
+	],
+	'comment' => 'after signed-out',
+	'expectation' => [
+		'status' => 0,
+		'error_code' => 1000,
+	],
+	'messages' => [
+		'starting' => 'Reading user <strong>%name%</strong> own record after signed-out...',
+		'success' => 'reading user <strong>%name%</strong> own record after signed-out failed as expected',
+		'failed' => 'allowing to read user <strong>%name%</strong> own record after signed-out'
+	]
+]);
+
+//--------------------------------------------------------
+test([
+	'line' => __LINE__,
+	'module' => '../user.php',
+	'model' => 'user',
+	'action' => 'signin',
+	'controller' => [
+		'name' => 'jamal',
+		'password' => 'vision1',
+	],
+	'comment' => 'with updated credentials',
+	'expectation' => [
+		'status' => 1
+	],
+	'messages' => [
+		'starting' => 'Signing-in user <strong>%name%</strong>...',
+		'success' => 'signed-in user <strong>%name%</strong>',
+		'failed' => 'signing-in user <strong>%name%</strong>'
 	]
 ]);
 

@@ -103,7 +103,7 @@ beat('user', 'signin', function ($name, $password)
 		if (password_verify($password, $records[0]['password']))
 		{
 			$_SESSION['user'] = [];
-			$_SESSION['user']['uid'] = $records[0]['id'];
+			$_SESSION['user']['id'] = $records[0]['id'];
 			$_SESSION['user']['name'] = $records[0]['name'];
 			$_SESSION['user']['email'] = $records[0]['email'];
 			$_SESSION['user']['created_utc'] = $records[0]['created_utc'];
