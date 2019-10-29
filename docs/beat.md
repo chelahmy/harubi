@@ -13,6 +13,10 @@ The beat() function compares `$_REQUEST['model']` with `$model` and `$_REQUEST['
 
 Before invoking the `$controller`, beat() will assign all matching arguments in the `$_REQUEST` to the `$controller`. The `$controller` is free to have any number of parameters, or none.
 
+A get request may look like the following:
+```
+http://example.com/time.php?model=system&action=gettime
+```
 beat() also accepts url-rewriting friendly request:
 ```
 http://example.com/?q=model/action/controller-param1/...
