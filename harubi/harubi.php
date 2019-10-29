@@ -34,7 +34,8 @@
 // 28 October 2019
 // - Cached the names of the last preset and toll intervened.
 // 30 October 2019
-// - Applied url-rewriting freindly arguments to beat().
+// - Applied url-rewriting friendly arguments to beat().
+// - Corrected request() changing behavior after beat() update. 
 
 // Literally, *harubi* is a keris with a golden handle, a Malay traditional hand weapon.
 // Beat and blow are offensive hand movements with or without weapon against an opponent.
@@ -1212,6 +1213,12 @@ function blow($model, $action, $controller)
 * and reinstate before exit. It will require() the module and
 * capture the output buffer which is expected to contain the
 * response string to the request.
+*
+* NOTE: The module MUST NOT define any function since the module
+*       will be requested multiple times, which will cause the
+*       function to be redefined which is not allowed in PHP.
+*       Define any function in another module, and use require_once().
+* 
 * Params:
 *	string $module	: PHP module/file name.
 *   string $model	: model name.
@@ -1220,7 +1227,7 @@ function blow($model, $action, $controller)
 * Return:
 *	The response string.
 */
-function request($module, $model, $action, $ctrl_args = [])
+function request($module, $model, $action, $ctrl_args = [], $apply_q = FALSE)
 {
 	ob_start();
 	
@@ -1236,7 +1243,10 @@ function request($module, $model, $action, $ctrl_args = [])
 	 
 	$_REQUEST['model'] = $model;
 	$_REQUEST['action'] = $action;
-	$q = $model . '/' . $action;
+	
+	if ($apply_q)
+		$q = $model . '/' . $action;
+	
 	$xargs = [];
 	
 	foreach ($ctrl_args as $name => $val)
@@ -1247,14 +1257,19 @@ function request($module, $model, $action, $ctrl_args = [])
 			$xargs[$name] = null;
 	
 		$_REQUEST[$name] = $val;
-		$q .= '/' . $val; 
+		
+		if ($apply_q)
+			$q .= '/' . $val; 
 	}
 	
-	if (isset($_REQUEST['q']))
-		$xq = $_REQUEST['q'];
+	if ($apply_q)
+	{
+		if (isset($_REQUEST['q']))
+			$xq = $_REQUEST['q'];
 	
-	$_REQUEST['q'] = $q;
-
+		$_REQUEST['q'] = $q;
+	}
+	
 	global $harubi_routing_done;
 	$xrd = $harubi_routing_done;
 	$harubi_routing_done = FALSE;
@@ -1265,8 +1280,10 @@ function request($module, $model, $action, $ctrl_args = [])
 	ob_end_clean();
 	
 	$_REQUEST['model'] = $xmodel;
-	$_REQUEST['action'] = $xaction; 
-	$_REQUEST['q'] = $xq;
+	$_REQUEST['action'] = $xaction;
+	
+	if ($apply_q)
+		$_REQUEST['q'] = $xq;
 	
 	foreach ($xargs as $name => $val)
 		$_REQUEST[$name] = $val;
