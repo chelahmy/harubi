@@ -14,7 +14,7 @@ harubi();
 //========================================================
 echo "<h1>Testing User Model</h1>";
 
-tests_expected(15);
+tests_expected(18);
 
 $dbname = check_db();
 prepare_table($dbname, 'user', '../user.sql');
@@ -325,6 +325,71 @@ test([
 		'starting' => 'Signing-in user <strong>%name%</strong>...',
 		'success' => 'signed-in user <strong>%name%</strong>',
 		'failed' => 'signing-in user <strong>%name%</strong>'
+	]
+]);
+
+//--------------------------------------------------------
+test([
+	'line' => __LINE__,
+	'module' => '../user.php',
+	'model' => 'user',
+	'action' => 'read',
+	'controller' => [
+		'name' => 'jamal'
+	],
+	'comment' => 'restricted',
+	'expectation' => [
+		'status' => 0,
+		'error_code' => 1001
+	],
+	'messages' => [
+		'starting' => 'Reading user <strong>%name%</strong> record with restricted action...',
+		'success' => 'reading user <strong>%name%</strong> record with restricted action failed as expected',
+		'failed' => 'allowing to read user <strong>%name%</strong> record with restricted action'
+	]
+]);
+
+//--------------------------------------------------------
+test([
+	'line' => __LINE__,
+	'module' => '../user.php',
+	'model' => 'user',
+	'action' => 'update',
+	'controller' => [
+		'name' => 'jamal',
+		'password' => 'vision2',
+		'email' => 'jamal_two@example.com'
+	],
+	'comment' => 'restricted',
+	'expectation' => [
+		'status' => 0,
+		'error_code' => 1001
+	],
+	'messages' => [
+		'starting' => 'Updating user <strong>%name%</strong> record with restricted action...',
+		'success' => 'updating user <strong>%name%</strong> record with restricted action failed as expected',
+		'failed' => 'allowing to update user <strong>%name%</strong> record with restricted action'
+	]
+]);
+
+//--------------------------------------------------------
+test([
+	'line' => __LINE__,
+	'module' => '../user.php',
+	'model' => 'user',
+	'action' => 'delete',
+	'controller' => [
+		'name' => 'jamal'
+	],
+	'comment' => 'restricted',
+	'expectation' => [
+		'status' => 0,
+		'error_code' => 1001
+	],
+	'messages' => [
+		'starting' => 'Deleting user <strong>%name%</strong> record with restricted action...',
+		'success' => 'deleting user <strong>%name%</strong> record with restricted action failed as expected',
+		'failed' => 'allowing to delete user <strong>%name%</strong> record with restricted action'
 	]
 ]);
 
