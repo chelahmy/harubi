@@ -9,4 +9,4 @@ Harubi emphasizes on **model-driven development**. In fact, harubi makes it diff
 
 Every software application can be formed as a cluster of models. Users ***act*** on models. Hence, the **model-action** pattern is both user and developer friendly.  
 
-In harubi a model is sliced into unique actions. Each action is served by a controller. An action focuses on a very specific vertical concern. On the other hand, harubi handles broad horizontal concerns through presets and tolls which run across controllers. The [User Model](models/user) is an example demonstrating harubi approaches. 
+In harubi a model is sliced into unique actions. Each action is [served](../docs/beat.md) by a controller. An action focuses on a very specific vertical concern. On the other hand, harubi handles broad horizontal concerns through [presets](../docs/preset.md) and [tolls](../docs/toll.md) which run across controllers. The [User Model](models/user) is an example demonstrating harubi approaches. 
