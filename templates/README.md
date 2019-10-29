@@ -1,7 +1,7 @@
 Harubi Templates
 ================
 
-Harubi templates serve as the starting points for building harubi applications. However, the templates are not the only ways to build harubi applications. The templates highlight harubi approaches.
+Harubi templates serve as the starting points for building harubi applications. However, the listed templates are not the only ways to build harubi applications. The templates highlight harubi approaches.
 
 We will be adding more templates from time to time.
 
