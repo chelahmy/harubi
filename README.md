@@ -14,6 +14,10 @@ A client make a request to a harubi server by specifying at least two arguments 
 ```
 http://example.com/time.php?model=system&action=gettime
 ```
+Or, a more url-rewriting friendly request:
+```
+http://example.com/time.php?q=system/gettime
+```
 
 And the server is expected to respond with a JSON formatted dataset, but not necessarily:
 
