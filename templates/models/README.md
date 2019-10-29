@@ -5,5 +5,9 @@ A **model** is an abstract software definition of user needs. A well-defined mod
 
 Generally, a model invokes a collection of controllers. A *vertical* slice of action is implemented as a vertical slice of controller. A vertical slice is a top-down process where a user's action at the top is carried out by a controller down to the bottom of a system. It will respond exactly to a user request through an action. However, a controller may need to handle few tasks that need to be applied *across* all actions such as access control and logging. Hence, a *horizontal* slice is referring to a task across all controllers. A horizontal action may need to deal with an access control task, a logging task, etc. Thus, a vertical controller is freed from the horizontal tasks. In harubi, a model's concerns are sliced vertically and horizontally. Hence, controller design is atomic and simplified.
 
+<p align="center">
+  <img src="model-action.png">
+</p>
+
 Vertical slicing is handled by [beats](../../docs/beat.md) and [blows](../../docs/blow.md). And horizontal slicing is handled by [presets](../../docs/preset.md) and [tolls](../../docs/toll.md).
 
