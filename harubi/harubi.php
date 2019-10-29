@@ -33,6 +33,8 @@
 // - Changed router() finishing from exit() to echo to facilitate internal request().
 // 28 October 2019
 // - Cached the names of the last preset and toll intervened.
+// 30 October 2019
+// - Applied url-rewriting freindly arguments to beat().
 
 // Literally, *harubi* is a keris with a golden handle, a Malay traditional hand weapon.
 // Beat and blow are offensive hand movements with or without weapon against an opponent.
@@ -1069,6 +1071,43 @@ function route($model, $action, $controller, $use_q = FALSE)
 }
 
 /**
+* Pass query string `q` for model, action, and controller arguments.
+* Format: 'q=model/action/controller-arg1/...'.
+* Return an array of the passed arguments, or FALSE.
+*/
+function q($str = '')
+{
+	global $harubi_query;
+	
+	if (strlen($str) > 0)
+		$harubi_query = explode("/", $str);	
+	elseif (isset($_REQUEST['q']))
+		$harubi_query = explode("/", $_REQUEST['q']);
+	else
+	{
+		$harubi_query = [];
+		return FALSE;
+	}
+
+	if (isset($harubi_query[0]))
+		$model = trim($harubi_query[0]);
+	else
+		return FALSE;
+
+	if (isset($harubi_query[1]))
+		$action = trim($harubi_query[1]);
+	else
+		return FALSE;
+		
+	if (count($harubi_query) > 2)
+		$ctrl_args = array_slice($harubi_query, 2);
+	else
+		$ctrl_args = [];
+		
+	return ['model' => $model, 'action' => $action, 'ctrl_args' => $ctrl_args];	
+}
+
+/**
 * beat() passes a request to the $controller which will echo back the
 * response string and cause other routing calls to be skipped. It will
 * do nothing if the $model and $action do not match. If $model is NULL
@@ -1077,9 +1116,15 @@ function route($model, $action, $controller, $use_q = FALSE)
 * Expecting request arguments 'model', 'action' and those
 * matching with the $controller parameters.
 * 
-* The $controller will be invoked if both $model and $action
-* matched with the request. Matching request arguments will
-* also be passed to the $controller. 
+* The arguments will be taken from matching query string arguments or
+* a form post arguments, or from the `q` argument which is url-rewriting
+* friendly with the following format:
+*   'q=model/action/controller-arg1/...'.
+* The `q` argument will take precedence.
+*
+* The $controller will be invoked if both $model and $action matched
+* with the request. Matching request arguments for the $controller
+* will also be passed to the $controller. 
 * 
 * The $controller is expected to return with an assoc array
 * which will then be converted to a json string as the response
@@ -1097,27 +1142,42 @@ function beat($model, $action, $controller)
 
 	if ($harubi_routing_done)
 		return;
-		
-	if ($model != NULL)
+	
+	$args = q(); // pass query string `q` which is url-rewriting friendly
+	$use_q = FALSE;
+	
+	if ($model !== NULL)
 	{
-		if (!isset($_REQUEST['model']) || $model != $_REQUEST['model'])
+		if ($args !== FALSE && is_array($args))
+		{
+			if (!isset($args['model']) || $model != $args['model'])
+				return;
+				
+			$use_q = TRUE;
+		}
+		elseif (!isset($_REQUEST['model']) || $model != $_REQUEST['model'])
 			return;
 	}
 		
-	if ($action != NULL)
+	if ($action !== NULL)
 	{
-		if (!isset($_REQUEST['action']) || $action != $_REQUEST['action'])
+		if ($use_q && $args !== FALSE && is_array($args))
+		{
+			if (!isset($args['action']) || $action != $args['action'])
+				return;
+		}
+		elseif ($use_q || !isset($_REQUEST['action']) || $action != $_REQUEST['action'])
 			return;
 	}
 	
-	route($model, $action, $controller);
+	route($model, $action, $controller, $use_q);
 }
 
 /**
-* blow() is similar to beat() except that it takes $_REQUEST['q']
+* blow() is similar to beat() except that it only takes $_REQUEST['q']
 * instead of $_REQUEST['model'] and $_REQUEST['action'].
 * The 'q' argument is expected to be a string with the following syntax:
-* 'model/action/controller-param1/...'.
+* 'model/action/controller-arg1/...'.
 */
 function blow($model, $action, $controller)
 {
@@ -1126,33 +1186,21 @@ function blow($model, $action, $controller)
 	if ($harubi_routing_done)
 		return;
 		
-	global $harubi_query;
-	
-	if (isset($_REQUEST['q']))
-		$harubi_query = explode("/", $_REQUEST['q']);
-	else
-		$harubi_query = [];
-
-	if (isset($harubi_query) && isset($harubi_query[0]))
-		$m = trim($harubi_query[0]);
-	else
-		$m = "";
-
-	if (isset($harubi_query) && isset($harubi_query[1]))
-		$a = trim($harubi_query[1]);
-	else
-		$a = "";
+	$args = q(); // pass query string `q` which is url-rewriting friendly
+		
+	if ($args === FALSE || !is_array($args))
+		return;
 		
 	if ($model != NULL)
 	{
-		if ($model != $m)
+		if (!isset($args['model']) || $model != $args['model'])
 			return;
 	}
 		
 	if ($action != NULL)
 	{
-		if ($action != $a)
-			return;	
+		if (!isset($args['action']) || $action != $args['action'])
+			return;
 	}
 	
 	route($model, $action, $controller, TRUE);
