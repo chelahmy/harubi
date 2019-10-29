@@ -14,7 +14,7 @@ A client make a request to a harubi server by specifying at least two arguments 
 ```
 http://example.com/time.php?model=system&action=gettime
 ```
-Or, a more url-rewriting friendly request:
+Or, a url-rewriting friendly request:
 ```
 http://example.com/time.php?q=system/gettime
 ```
@@ -50,7 +50,7 @@ The beat() function has a cousin **[blow()](docs/blow.md)**. They are generally 
 http://example.com/time.php?q=system/gettime
 ```
 
-Through out the documentation we will use beat() more often then blow() due to the beat() request verbosity which is clearer to explain. Anyway, harubi is not designed for front-ending with pretty urls. However, it will not stop people from doing so. 
+Through out the documentation we will use beat() more often then blow() due to the beat() query-string-based request's verbosity which is clearer to explain. Anyway, harubi is not designed for front-endings with pretty urls. However, it will not stop people from doing so. 
 
 
 ### Example 2
