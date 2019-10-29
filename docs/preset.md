@@ -1,8 +1,8 @@
 Preset
 ======
-A preset is a process run before a controller is invoked. It can stop the controller from being invoked. It can alter the arguments before they are passed to the controller. It can invoke other controllers. And it can do about any other things unrelated to the controller.
+A preset is a process run before a controller is invoked. It runs across controllers. It can stop a controller from being invoked. It can alter given arguments before they are passed to a controller. It can invoke other controllers. And it can do about any other things unrelated to a controller.
 
-All preset functions must be injected prior to calling any routing function ([beat()](beat.md) or [blow()](blow.md)). A preset function is injected using preset() function.
+All preset functions must be injected prior to calling any routing function [beat()](beat.md) or [blow()](blow.md). A preset function is injected using preset() function.
 
 ## preset()
 ```php
@@ -46,7 +46,7 @@ preset('permission', function ($model, $action, &$ctrl_args)
 		return respond_error(1, "Access denied");
 });
 ```
-A preset that returns something will stop the controller from being invoked. The return value will be used as the response to the request that called the preset. If a preset does not return anything then the controller will be invoked.
+A preset that returns something will stop the controller from being invoked. The return value will be used as the response to the request that called the preset. If a preset does not return anything then the controller will be invoked as expected.
 
 ## Notes
 
