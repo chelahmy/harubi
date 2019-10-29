@@ -1,8 +1,8 @@
 Toll
 ====
-A toll is a process run after a controller was invoked. It can alter or replace the controller results. It can do about any other things.
+A toll is a process run after a controller was invoked. It runs across controllers. It can alter or replace a controller results. It can do about any other things.
 
-All toll functions must be injected prior to calling any routing function ([beat()](beat.md) or [blow()](blow.md)). A toll function is injected using toll() function.
+All toll functions must be injected prior to calling any routing function [beat()](beat.md) or [blow()](blow.md). A toll function is injected using toll() function.
 
 ## toll()
 ```php
@@ -50,7 +50,7 @@ toll('watchdog', function ($model, $action, $ctrl_args, &$ctrl_results)
 		return respond_error(1, "The response contains rude word");
 });
 ```
-A toll that returns something will bypass the controller results. The return value will then be used as the response to the request that called the toll. If a toll does not return anything then the controller results will be used as the response to the request.
+A toll that returns something will bypass the controller results. The return value will then be used as the response to the request that called the toll. If a toll does not return anything then the controller results will be used as the response to the request as expected.
 
 ## Notes
 
