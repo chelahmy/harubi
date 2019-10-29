@@ -44,13 +44,13 @@ The beat() call is pulling three arguments: **$model**, **$action** and **$contr
 
 The beat **model-action &rarr; controller** pattern is the harubi unique way to route requests to controllers.
 
-The beat() function has a cousin **[blow()](docs/blow.md)**. They are generally the same except that blow() accepts request in the format which is more url-rewriting friendly:
+The beat() function has a cousin **[blow()](docs/blow.md)**. They are generally the same except that blow() only accepts request in a url-rewriting friendly format:
 
 ```
 http://example.com/time.php?q=system/gettime
 ```
 
-Through out the documentation we will use beat() more often then blow() due to the beat() request verbosity which is clearer to explain. Anyway, harubi is not designed for front-ending. However, it will not stop people from doing so. 
+Through out the documentation we will use beat() more often then blow() due to the beat() request verbosity which is clearer to explain. Anyway, harubi is not designed for front-ending with pretty urls. However, it will not stop people from doing so. 
 
 
 ### Example 2
