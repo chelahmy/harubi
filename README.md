@@ -9,7 +9,7 @@ Harubi emphasizes on **model-driven development**. A **model** in harubi may not
 
 ### Example 1
 
-A client make a request to a harubi server by specifying at least two arguments in the query string: a **model** and an **action** against the model, together with other related **controller** arguments, if defined. The following is a typical request:
+A client make a request to a harubi server by specifying at least two arguments in the query string, or through a html form post: a **model** and an **action**, together with other related **controller** arguments, if defined. The following is a typical request:
 
 ```
 http://example.com/time.php?model=system&action=gettime
