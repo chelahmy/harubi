@@ -74,7 +74,7 @@ A function should return the expected results. However, there are many instances
 
 A controller may not always be able to return the expected results. Hence, it must always return a status so that the response to a request, which is handled by the controller, will be in turn handled appropriately.
 
-Harubi published a set of [respond()](respond.md) functions to help with controller returns. It is more conventional than strict. An application may want to handle its responses differently.
+Harubi published a set of [respond()](respond.md) functions to help with controller returns. It is more conventional than strict. An application may want to handle its responses differently. However, the [harubi test framework](../test) relies on it.
 
 The following is an example of a controller return with [respond_ok()](respond.md):
 ```php
