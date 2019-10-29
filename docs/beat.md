@@ -19,7 +19,7 @@ http://example.com/?q=model/action/controller-param1/...
 ```
 The `q` parameter in the query string contain a slash-separated arguments. The first two arguments are for the model and the action parameters of the blow() function. The rest of the arguments are for the controller. The third argument is for the first parameter of the controller, the fourth argument is for the second parameter, and so on.
 
-**Note:** If `q` argument exists in a request query string, which is meant for a url-rewriting friendly request, then beat() will use it and ignore other arguments such as `model` and `action`.
+**Note:** If `q` parameter exists in a request query string, which is meant for a url-rewriting friendly request, then beat() will use it and ignore other parameters such as `model` and `action`. You may want to use [blow()](blow.md) which responds only to url-rewriting friendly requests.
 
 ## Parameters
 
