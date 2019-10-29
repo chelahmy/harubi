@@ -217,6 +217,9 @@ function test($case)
 
 	if (!with_status($response, $exp) || !with_results($response, $exp_results))
 	{
+		echo_br("Expecting:");
+		print_pre($exp);
+		
 		if (isset($failed_msg))
 			die(failed(msg($failed_msg, $ctrl)));
 		else
