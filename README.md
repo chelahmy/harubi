@@ -84,7 +84,7 @@ The **[read()](docs/read.md)** function is one of the implemented CRUD functions
 
 ## Model
 
-A model is an abstract dataset with action interfaces. In harubi a model is sliced into a set of beat() call implementations. Every beat() call is implementing an action for a model. It is easy to associate a model to a table in a database. However, in harubi a model can become very complex such as involving multiple relational tables. As an example, a user may have a role which defines permissions to access the system. There could be a *getpermissions* action on the *user* model which could involve three tables: user, role and permission.
+A model is an abstract object with action interfaces. In harubi a model is sliced into a set of beat() implementations. Every beat() is implementing a response to an action for a model. It is easy to associate a model to a table in a database. However, in harubi a model can become very complex such as involving multiple relational tables, or no table at all as in the get time example above. As a database example, a user may have a role which defines permissions to access the system. There could be a *getpermissions* action on the *user* model which could involve three tables: user, role and permission.
 
 ```php
 beat('user', 'getpermissions', function ($name)
@@ -100,9 +100,9 @@ beat('user', 'getpermissions', function ($name)
  
 ## Controller
 
-In harubi, a controller is usually a closure implemention wrapped in a beat() call. Every controller implements a model's action. It is the duty of a controller to make all necessary database queries and form the response for the action as requested. The controller is expected to return results in an array, but not necessarilly.
+In harubi, a controller is usually a closure wrapped in a beat() call. Every controller implements a model's action. It is the duty of a controller to make all necessary system or database queries and form the response for the action as requested. The controller is expected to return results in an array, but not necessarilly.
 
-If a controller is a closure then you may be tricked to see that a beat() is a controller such as in the model example above, but the beat() is not the controller. A controller can be implemented as a function for reuse in other beat() calls.
+If a controller is a closure then you may think that a beat() is a controller such as in the model example above, but the beat() is not the controller. A controller can be implemented as a function for reuse in other beat() calls.
 
 ```php
 function getpermissions_controller($name)
