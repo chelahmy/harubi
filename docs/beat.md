@@ -13,6 +13,14 @@ The beat() function compares `$_REQUEST['model']` with `$model` and `$_REQUEST['
 
 Before invoking the `$controller`, beat() will assign all matching arguments in the `$_REQUEST` to the `$controller`. The `$controller` is free to have any number of parameters, or none.
 
+beat() also accepts url-rewriting friendly request:
+```
+http://example.com/?q=model/action/controller-param1/...
+```
+The `q` parameter in the query string contain a slash-separated arguments. The first two arguments are for the model and the action parameters of the blow() function. The rest of the arguments are for the controller. The third argument is for the first parameter of the controller, the fourth argument is for the second parameter, and so on.
+
+**Note:** If `q` argument exists in a request query string, which is meant for a url-rewriting friendly request, then beat() will use it and ignore other arguments such as `model` and `action`.
+
 ## Parameters
 
 ***$model***
