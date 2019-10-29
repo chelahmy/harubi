@@ -32,7 +32,7 @@
 // - Added request() function for internal request.
 // - Changed router() finishing from exit() to echo to facilitate internal request().
 // 28 October 2019
-// - Cached the names of the last preset and toll invoked.
+// - Cached the names of the last preset and toll intervened.
 
 // Literally, *harubi* is a keris with a golden handle, a Malay traditional hand weapon.
 // Beat and blow are offensive hand movements with or without weapon against an opponent.
@@ -79,8 +79,8 @@ $harubi_routing_done = FALSE;
 // Injection method handlers
 $harubi_presets = array();
 $harubi_tolls = array();
-$harubi_last_preset_invoked = FALSE;
-$harubi_last_toll_invoked = FALSE;
+$harubi_last_preset_intervened = FALSE;
+$harubi_last_toll_intervened = FALSE;
 
 // Log variables
 $harubi_logs = array();
@@ -909,10 +909,10 @@ function preset($name, $func)
 function invoke_presets($model, $action, &$ctrl_args)
 {
 	global $harubi_presets;
-	global $harubi_last_preset_invoked;
+	global $harubi_last_preset_intervened;
 	global $harubi_do_log_presets;
 	
-	$harubi_last_preset_invoked = FALSE;
+	$harubi_last_preset_intervened = FALSE;
 	
 	if (!is_array($harubi_presets) || count($harubi_presets) <= 0)
 		return;
@@ -929,7 +929,11 @@ function invoke_presets($model, $action, &$ctrl_args)
 			
 			if ($status !== NULL)
 			{
-				$harubi_last_preset_invoked = $preset_name;
+				$harubi_last_preset_intervened = $preset_name;
+				
+				if (isset($harubi_do_log_presets) && $harubi_do_log_presets)
+					harubi_log(__FILE__,__FUNCTION__, __LINE__, 'notice', "Preset '$preset_name' intervened on model = '$model' and action = '$action'");
+				
 				return $status;
 			}
 		}
@@ -960,10 +964,10 @@ function toll($name, $func)
 function invoke_tolls($model, $action, $ctrl_args, &$ctrl_results)
 {
 	global $harubi_tolls;
-	global $harubi_last_toll_invoked;
+	global $harubi_last_toll_intervened;
 	global $harubi_do_log_tolls;
 	
-	$harubi_last_toll_invoked = FALSE;
+	$harubi_last_toll_intervened = FALSE;
 	
 	if (!is_array($harubi_tolls) || count($harubi_tolls) <= 0)
 		return;
@@ -980,7 +984,11 @@ function invoke_tolls($model, $action, $ctrl_args, &$ctrl_results)
 			
 			if ($status !== NULL)
 			{
-				$harubi_last_toll_invoked = $toll_name;
+				$harubi_last_toll_intervened = $toll_name;
+				
+				if (isset($harubi_do_log_tolls) && $harubi_do_log_tolls)
+					harubi_log(__FILE__,__FUNCTION__, __LINE__, 'notice', "Toll '$toll_name' intervened on model = '$model' and action = '$action'");
+				
 				return $status;
 			}
 		}
