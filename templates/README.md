@@ -1,7 +1,7 @@
 Harubi Templates
 ================
 
-Harubi templates serve as the starting points for building harubi back-end services. However, the listed templates are not the only ways to build harubi services. The templates highlight harubi approaches.
+Harubi templates serve as the starting points for building harubi back-end services and applications. However, the listed templates are not the only ways to build with harubi. The templates highlight harubi approaches.
 
 New templates will be added from time to time.
 
