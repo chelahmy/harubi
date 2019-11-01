@@ -33,7 +33,7 @@ Sign-up a new user. Pass in user name, password and e-mail address.
 
 **sign_in**
 
-Sign-in an existing user into a session.
+Sign-in an existing user into a session. Pass in user name and password.
 
 **sign_out**
 
