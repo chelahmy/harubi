@@ -45,7 +45,7 @@ Read the signed-in user record. Return the user name, password, e-mail address a
 
 **read**
 
-Read a user record by name. Return the user name, password, e-mail address and created timestamp. Super-user only. 
+Read a user record by name. Return the user name, password, e-mail address and created timestamp. *Super-user only*. 
 
 **update_own**
 
@@ -53,8 +53,8 @@ Update the signed-in user record. Pass in password and e-mail address. User name
 
 **update**
 
-Update a user record by name. Pass in password and e-mail address. User name cannot be changed. Super-user only.
+Update a user record by name. Pass in password and e-mail address. User name cannot be changed. *Super-user only*.
 
 **delete**
 
-Delete a user record by name. Super-user only.
+Delete a user record by name. Cannot delete the super-user. *Super-user only*.
