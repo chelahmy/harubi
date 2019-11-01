@@ -251,6 +251,8 @@ Create more user records and read them back randomly for you to get the initial 
 
 ## Function List
 
+Every function has a page in the [documentation](docs) folder. Harubi documentation is bigger than its code base. Every folder in this repository has a README.md file describing its contents. GitHub will display the README below the file listing of the folder.
+
 Initialization and settings:
 [harubi()](docs/harubi.md)
 
