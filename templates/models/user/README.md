@@ -1,7 +1,7 @@
 User Model
 ==========
 
-A basic user model with name, password and email. The first user with id=1 is the super-user who has all access rights. There is only one super-user. The rest are ordinary users with the same access rights. A user has to sign-up and then sign-in. The access control in implemented in presets.
+A basic user model with properties name, password and email. The first user with id=1 is the super-user who has all access rights. There is only one super-user. The rest are ordinary users with the same access rights. A user has to sign-up and then sign-in. The access control in implemented in presets. It uses PHP session.
 
 # Properties
 
