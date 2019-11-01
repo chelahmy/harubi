@@ -57,4 +57,4 @@ Update a user record by name. Pass in password and e-mail address. User name can
 
 **delete**
 
-Delete a user record by name. Cannot delete the super-user. *Super-user only*.
+Delete a user record by name. Cannot delete the super-user record. *Super-user only*.
