@@ -233,19 +233,20 @@ CREATE TABLE IF NOT EXISTS `user` (
 
 The `harubi.php` file is expected to be at *harubi/harubi.php* as declared in the *user.php* file above.
 
-Now, you may create a user record and read it back. Open a browser and make a query with the following syntax. Make sure to replace *example.com* with your host name.
-
+Now, you may create a user record and read it back. Start the PHP development server:
 ```
-http://example.com/user.php?model=user&action=create&name=ali&password=secret
+$ php -S localhost:8000
 ```
-
+Open a browser and make a query with the following syntax.
+```
+http://localhost:8000/user.php?model=user&action=create&name=ali&password=secret
+```
 Then, you may read the record back using the following syntax:
-
 ```
-http://example.com/user.php?model=user&action=read&name=ali
+http://localhost:8000/user.php?model=user&action=read&name=ali
 ```
 
-Create more user records and read them back randomly for you to get the initial experience of using a harubi server. You will not be doing things like that often. Most of the time the requests to a harubi server will be done by its client applications.
+Create more user records and read them back randomly. Do it more for you to get the initial experience of using a harubi service. You will not be doing these things often. Most of the time the requests to a harubi service will be done by another applications such as a front-end.
 
 
 ## Function List
