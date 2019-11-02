@@ -63,7 +63,7 @@ Delete a user record by name. Cannot delete the super-user record. *Super-user o
 
 **permission_authenticated_user**
 
-Prevent non-user access. Only the following actions are allow without signing-in: *signup* and *signin*. 
+Prevent access without signing-in. Only the following actions are allow without signing-in: *signup* and *signin*. 
 
 **permission_super_user**
 
