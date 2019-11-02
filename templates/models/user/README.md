@@ -71,5 +71,5 @@ Prevent non-super-user access. The following actions are allowed: *signup*, *sig
 
 **permission_change_user**
 
-Prevent super-user from being deleted.
+Prevent super-user from being deleted. It also verifies the existence of a user record before making changes.
 
