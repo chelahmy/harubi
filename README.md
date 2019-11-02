@@ -5,7 +5,7 @@ Harubi
 
 Harubi is a **[Model-Action Framework](templates/models)** for rapid implementation of back-end services. It is a MVC-like framework minus the View concerns. Nowadays, most front-ends render Views themselves. A front-end may need to access a back-end service only for complex processes and persistance. The absence of **view** makes harubi much lighter and faster compares to other back-end MVC frameworks. A harubi service can serve all types of front-ends including web, desktop and mobile applications. It can also serve other back-end services. Harubi is **API-driven**.
 
-Harubi emphasizes on **model-driven development**. A model is an abstract definition of a software. A **model** in harubi may not necessarily be an object wrapping a single relational database table. It may be as complex as a relational model with many interrelated tables. Yet, a model may not necessarily be table or object oriented at all. Every request to a harubi service is **acting** on a model. Users ***act*** on models. A request will be routed to a controller that handles a **model-action**. Every controller in harubi is handling an action of a model. See the [user model](templates/models/user) template for a complete code preview on the model-action pattern. And see the [model-action framework](templates/models) to understand the convention.
+Harubi emphasizes on **model-driven development**. A model is an abstract software definition. A **model** in harubi may not necessarily be an object wrapping a single relational database table. It may be as complex as a relational model with many interrelated tables. Yet, a model may not necessarily be table or object oriented at all. Every request to a harubi service is **acting** on a model. Users ***act*** on models. A request will be routed to a controller that handles a **model-action**. Every controller in harubi is handling an action of a model. See the [user model](templates/models/user) template for a complete code preview on the model-action pattern. And see the [model-action framework](templates/models) to understand the convention.
 
 ### Example 1
 
@@ -87,7 +87,7 @@ The **[read()](docs/read.md)** function is one of the implemented CRUD functions
 
 ## Model
 
-A model is an abstract object with action interfaces. In harubi a model is sliced into a set of beat() implementations. Every beat() is implementing a response to an action for a model. It is easy to associate a model to a table in a database. However, in harubi a model can become very complex such as involving multiple relational tables, or no table at all as in the get time example above. As a database example, a user may have a role which defines permissions to access the system. There could be a *getpermissions* action on the *user* model which could involve three tables: user, role and permission.
+A model is an abstract software definition with action interfaces. In harubi a model is sliced into a set of beat() implementations. Every beat() is implementing a response to an action of a model. It is easy to associate a model to a table in a database. However, in harubi a model can become very complex such as involving multiple relational tables, or no table at all as in the get time example above. In a typical service example, a user may have a role which defines permissions to access the system. There could be a *getpermissions* action on the *user* model which could involve three tables: user, role and permission.
 
 ```php
 beat('user', 'getpermissions', function ($name)
