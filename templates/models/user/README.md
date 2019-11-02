@@ -41,11 +41,11 @@ Sign-out current user from the session.
 
 **read_own**
 
-Read the signed-in user record. Return the user name, password, e-mail address and created timestamp.
+Read the signed-in user record. Return the user name, e-mail address and created timestamp.
 
 **read**
 
-Read a user record by name. Return the user name, password, e-mail address and created timestamp. *Super-user only*. 
+Read a user record by name. Return the user name, e-mail address and created timestamp. *Super-user only*. 
 
 **update_own**
 
