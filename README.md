@@ -3,9 +3,9 @@ Harubi
 
 ## Introduction
 
-Harubi is a **[Model-Action Framework](templates/models)**. It is a MVC-like framework for back-end server, minus the View concern which belongs to the front-end. Nowadays, most clients render Views themselves. The clients may need to access the server only for the storage and persistance. Harubi focuses on **controlling** access to the **models** on the server side. The absence of the **view** makes harubi much lighter and faster compares to other back-end MVC frameworks. A harubi server can serve all types of clients including web, desktop and mobile applications. Harubi is **API-driven**.
+Harubi is a **[Model-Action Framework](templates/models)**. It is a MVC-like framework for back-end services, minus the View concern which belongs to the front-end. Nowadays, most clients render Views themselves. Clients may need to access a server only for the storage and persistance. The absence of the **view** makes harubi much lighter and faster compares to other back-end MVC frameworks. A harubi service can serve all types of clients including web, desktop and mobile applications. Harubi is **API-driven**.
 
-Harubi emphasizes on **model-driven development**. A **model** in harubi may not just be a wrapper to a single relational database table. A model can be as complex as a relational model with many interrelated tables. Or, a model may not refer to any database table at all. Every request to a harubi service is **acting** on a model. Users ***act*** on models. A request will be routed to a controller that handles a **model-action**. Hence, every controller in harubi is handling a model-action.
+Harubi emphasizes on **model-driven development**. A **model** in harubi may not just be a wrapper to a single relational database table. A model can be as complex as a relational model with many interrelated tables. Or, a model may not refer to any database table at all. Every request to a harubi service is **acting** on a model. Users ***act*** on models. A request will be routed to a controller that handles a **model-action**. Every controller in harubi is handling an action of a model. See the [user model](templates/models/user) template to learn model-action pattern in complete codes.
 
 ### Example 1
 
