@@ -9,7 +9,7 @@ Harubi emphasizes on **model-driven development**. A model is an abstract defini
 
 ### Example 1
 
-A client make a request to a harubi server by specifying at least two arguments in the query string, or through a html form post: a **model** and an **action**, together with other related **controller** arguments, if defined. The following is a typical request:
+A front-end makes a request to a harubi service by specifying at least two arguments in the query string, or through a html form post: **model** and **action**, together with **controller** arguments. The following is a typical request:
 
 ```
 http://example.com/time.php?model=system&action=gettime
@@ -19,13 +19,13 @@ Or, a url-rewriting friendly request:
 http://example.com/time.php?q=system/gettime
 ```
 
-And the server is expected to respond with a JSON formatted dataset, but not necessarily:
+And the service is expected to respond with a JSON formatted dataset:
 
 ```json
 {"time":1426835075}
 ```
 
-The harubi server implementation may looks like the following:
+The harubi service implementation may looks like the following:
 
 ```php
 beat('system', 'gettime', function ()
@@ -37,10 +37,9 @@ The [beat()](docs/beat.md) function is defined as follow:
 ```php
 void beat(string $model, string $action, function $controller)
 ```
+A beat() function call is pulling three arguments: **$model**, **$action** and **$controller**. In the case above the $model is set to `system`, the $action is set to `gettime`, and the $controller is set to a function closure without parameter. The beat() function will test whether the request matches with the specified model and action. If it does than the controller will be invoked immediately. If the controller function has parameters then the values will be retrieved from the request query string. However, in this case the controller has no parameter. The controller is expected to return an array which will be converted into JSON string. 
 
-The beat() call is pulling three arguments: **$model**, **$action** and **$controller**. In the case above the $model is set to `system`, the $action is set to `gettime`, and the $controller is set to a function closure. The beat() function will test whether the request matches with the specified model and action. If it does than the controller will be invoked. If the controller function has parameters then the values will be retrieved from the request query string. However, in this case the controller has no parameter. The controller is expected to return an array which will be converted into JSON before the beat() function exits. 
-
-**The beat process explained:** Whenever the $model and $action matched, the beat() function will invoke the $controller and wait for it to return, convert the return array into JSON, or leave it as-is whenever the return value is not an array, and then let PHP to exit with the JSON/as-is return value as the response. Otherwise, the execution will continue looking for the next beat() calls.
+**The beat process explained:** Whenever the $model and $action matched, the beat() function will invoke the $controller immediately and wait for it to return, convert the returned array values into a JSON string and write it to the PHP output buffer as a response to the request, and disable subsequent beat() or routing function calls. If the controller does not return an array then the returned value will be taken as-is without converting it to a JSON string.
 
 The beat **model-action &rarr; controller** pattern is the harubi unique way to route requests to controllers.
 
@@ -50,7 +49,7 @@ The beat() function has a cousin **[blow()](docs/blow.md)**. They are generally 
 http://example.com/time.php?q=system/gettime
 ```
 
-Through out the documentation we will use beat() more often then blow() due to the beat() verbosity on query-string-based request, which is clearer to explain. Anyway, harubi is not designed for front-endings with pretty urls. However, it will not stop people from doing so. 
+Through out the documentation we will use beat() more often then blow() due to the beat() verbosity on query-string-based request, which is clearer to explain. Anyway, harubi is not designed for front-endings with pretty urls. Yet, it will not stop people from doing so. 
 
 
 ### Example 2
