@@ -27,15 +27,15 @@ Record updated timestamp in unix time.
 
 # Actions
 
-**sign_up**
+**signup**
 
 Sign-up a new user. Pass in user name, password and e-mail address.
 
-**sign_in**
+**signin**
 
 Sign-in an existing user into a session. Pass in user name and password.
 
-**sign_out**
+**signout**
 
 Sign-out current user from the session.
 
@@ -58,3 +58,18 @@ Update a user record by name. Pass in password and e-mail address. User name can
 **delete**
 
 Delete a user record by name. Cannot delete the super-user record. *Super-user only*.
+
+# Presets
+
+**permission_authenticated_user**
+
+Prevent non-user access. Only the following actions are allow without signing-in: signup and signin. 
+
+**permission_super_user**
+
+Prevent non-super-user access. The following actions are allowed: signup, signin, signout, read_own and update_own. 
+
+**permission_change_user**
+
+Prevent super-user from being deleted.
+
