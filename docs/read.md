@@ -149,9 +149,7 @@ $records = read(['table'=>'user', 'count'=>TRUE]); // the count of all records
 
 ## Notes
 
-The read() function is not designed to replace SQL SELECT. harubi is only interested in object-relational maping (ORM). Thus, many relational models for SELECT are not directly supported.
-
-The read() function simplifies the process to read records from the database based on the ORM principle. It also sanitizes almost all inputs so that to protect the database from the SQL injection attack.
+The read() function generalizes SQL constructs to read records from a database with simple conditions. However, it does not support complex SQL queries. The read() function sanitizes most inputs so that to protect the database from the SQL injection attack.
 
 ## See Also
 
