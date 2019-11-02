@@ -246,7 +246,7 @@ Then, you may read the record back using the following syntax:
 http://localhost:8000/user.php?model=user&action=read&name=ali
 ```
 
-Create more user records and read them back randomly. Do it more for you to get the initial experience of using a harubi service. You will not be doing these things often. Most of the time the requests to a harubi service will be done by another applications such as a front-end.
+Create more user records and read them back randomly. Do it more for you to get the initial experience of using a harubi service. You will not be doing these things often. Most of the time requests to a harubi service will be done by another applications such as a front-end.
 
 
 ## Function List
