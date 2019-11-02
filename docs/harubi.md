@@ -23,6 +23,8 @@ The `globals` settings looks like the following:
 	"globals" : {
 		"do_dump_logs" : true,
 		"do_log_sql_querystring" : true,
+		"do_log_presets" : true,
+		"do_log_tolls" : true,
 		"respond_with_logs" : false
 	}
 }
@@ -36,6 +38,14 @@ When set to true then harubi logs will be written to `harubi.log` file on exit.
 ***do_log_sql_querystring***
 
 When set to true then harubi will log all sql query strings used to query the database.
+
+***do_log_presets***
+
+When set to true then harubi will log all preset invokation.
+
+***do_log_tolls***
+
+When set to true then harubi will log all toll invokation.
 
 ***respond_with_logs***
 
@@ -96,6 +106,8 @@ The harubi() function above will load a *settings.inc* file such as the followin
 	"globals" : {
 		"do_dump_log" : true,
 		"do_log_sql_querystring" : true,
+		"do_log_presets" : true,
+		"do_log_tolls" : true,
 		"respond_with_logs" : false
 	},
 
