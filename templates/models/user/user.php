@@ -44,6 +44,7 @@ preset('permission_change_user', function ($model, $action, &$ctrl_args)
 {
 	if ($model == 'user' && in_array($action, ['update', 'delete']))
 	{
+		$name = $ctrl_args[0]; // name is the first argument in update and delete
 		$where = equ('name', $name, 'string');
 		$records = read(['table' => 'user', 'where' => $where]);
 
@@ -55,7 +56,7 @@ preset('permission_change_user', function ($model, $action, &$ctrl_args)
 				return respond_error(1002, "Cannot delete super-user record.");
 		}
 		else
-			return respond_error(1003, "The user record does not exist.");
+			return respond_error(1003, "The user record does not exist. ");
 	}
 });
 
@@ -170,7 +171,7 @@ beat('user', 'delete', function ($name)
 {    
 	$where = equ('name', $name, 'string');
 
-	if (delete(['table' => 'user', 'where' => $where]))		
+	if (delete('user', $where))		
 		return respond_ok();
 		
 	return respond_error(1, "Cannot delete user record.");
