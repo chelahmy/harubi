@@ -87,7 +87,7 @@ The **[read()](docs/read.md)** function is one of the implemented CRUD functions
 
 ## Model
 
-A model is an abstract software definition with action interfaces. In harubi a model is sliced into a set of beat() implementations. Every beat() is implementing a response to an action of a model. It is easy to associate a model to a table in a database. However, in harubi a model can become very complex such as involving multiple relational tables, or no table at all as in the get time example above. In a typical service example, a user may have a role which defines permissions to access the system. There could be a *getpermissions* action on a *user* model which could involve three tables: user, role and permission.
+A model is an abstract software definition with action interfaces. In harubi a model is sliced into a set of beat() implementations. Every beat() is implementing a response to an action of a model. It is easy to associate a model to a table in a database. However, in harubi a model can become very complex such as involving multiple relational tables, or no table at all as in the get time example above. In a typical service example, a user may have a role which defines permissions to access the service. There could be a *getpermissions* action on a *user* model which could involve three tables: user, role and permission.
 
 ```php
 beat('user', 'getpermissions', function ($name)
