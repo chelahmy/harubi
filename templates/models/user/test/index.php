@@ -16,8 +16,8 @@ echo "<h1>Testing User Model</h1>";
 
 tests_expected(32);
 
-$dbname = check_db();
-prepare_table($dbname, 'user', '../user.sql');
+//$dbname = check_db();
+prepare_db('user', '../user');
 
 session_start(); // This user model uses PHP session
 unset($_SESSION['user']); // Reset user session
