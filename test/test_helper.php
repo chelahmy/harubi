@@ -263,41 +263,33 @@ function check_db()
 }
 
 /**
-* Create a table if not exists, or empty the table and reset auto-increment. 
+* Create a set of tables if not exists, or empty the tables and reset auto-increment. 
 */
-function prepare_table($dbname, $tblname, $tblsql)
+function prepare_db($name, $sql)
 {
-	if (!table_exists($tblname))
-	{
-		$db = connect_db();
-
-		if ($db === FALSE)
-			die(failed("connecting to the database <strong>$dbname</strong>."));
-
-		echo_br("Creating table <strong>$tblname</strong>...");
-		$sql = file_get_contents($tblsql);	
-		mysqli_multi_query($db, $sql);
-		mysqli_close($db);
+	global $harubi_mysql_settings;
 	
-		if (!table_exists('user'))
-			die(failed("creating table <strong>$tblname</strong>."));
-		
-		echo_br("Table <strong>$tblname</strong> created.");
-	}
-	else
-	{
-		delete($tblname, '`id` > 0'); // delete all records
+	$dbn = $harubi_mysql_settings['database'];
+	$db = connect_db();
 
-		$db = connect_db();
+	if ($db === FALSE)
+		die(failed("connecting to the database <strong>$dbn</strong>."));
 
-		if ($db === FALSE)
-			die(failed("connecting to the database <strong>$dbname</strong>."));
-		
-		mysqli_query($db, "ALTER TABLE `$tblname` AUTO_INCREMENT = 1");	
-		mysqli_close($db);
-	}
+	echo_br("Uninstalling <strong>$name</strong>...");
+	$query = file_get_contents($sql . ".uninstall.sql");
+	print_pre($query);
+	
+	if (mysqli_multi_query($db, $query))
+		while (mysqli_next_result($db)); // flush		
 
-	echo_br("Table exists: <strong>$tblname</strong>");
+	echo_br("Installing <strong>$name</strong>...");
+	$query = file_get_contents($sql . ".install.sql");	
+	print_pre($query);
+	
+	if (mysqli_multi_query($db, $query))
+		while (mysqli_next_result($db)); // flush		
+
+	mysqli_close($db);
 }
 
 ?>
