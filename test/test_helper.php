@@ -105,21 +105,26 @@ function with_results($response, $matching)
 	return TRUE;		
 }
 
-function msg($msg, $ctrl)
+/**
+* Render a message template with arguments.
+* A template placeholder starts and ends with %,
+* i.e. %name%, %desc%, etc.
+*/
+function msg($msg_tmpl, $args)
 {
-	if (!is_array($ctrl) || count($ctrl) <= 0)
-		return $msg;
+	if (!is_array($args) || count($args) <= 0)
+		return $msg_tmpl;
 		
-	foreach ($ctrl as $name => $val)
-		$msg = str_replace("%$name%", $val, $msg);
+	foreach ($args as $name => $val)
+		$msg_tmpl = str_replace("%$name%", $val, $msg_tmpl);
 	
-	return $msg;
+	return $msg_tmpl;
 }
 
 /**
 * Invoke a basic harubi test case.
 * A parameterized request to a test module will be invoked,
-* and the response will be gauged with the expected results.
+* and the response will be gauged against the expected results.
 * Messages will be echoed.
 * Test $case arguments:
 * [
@@ -263,9 +268,17 @@ function check_db()
 }
 
 /**
-* Create a set of tables if not exists, or empty the tables and reset auto-increment. 
+* Uninstalling and then re-installing service database.
+* WARNING: This is meant for testing a new service.
+*          Do not run this on production service.
+* Arguments:
+*  string $service 	- service name.
+*  string $sql_path	- the path to the service's sql installation and uninstallation scripts:
+*					  <path/to/service>.install.sql & <path/to/service>.uninstall.sql
+*					  minus the .install.sql & .uninstall.sql
+*                 
 */
-function prepare_db($name, $sql)
+function prepare_db($service, $sql_path)
 {
 	global $harubi_mysql_settings;
 	
@@ -275,15 +288,15 @@ function prepare_db($name, $sql)
 	if ($db === FALSE)
 		die(failed("connecting to the database <strong>$dbn</strong>."));
 
-	echo_br("Uninstalling <strong>$name</strong>...");
-	$query = file_get_contents($sql . ".uninstall.sql");
+	echo_br("Uninstalling <strong>$service</strong>...");
+	$query = file_get_contents($sql_path . ".uninstall.sql");
 	print_pre($query);
 	
 	if (mysqli_multi_query($db, $query))
 		while (mysqli_next_result($db)); // flush		
 
-	echo_br("Installing <strong>$name</strong>...");
-	$query = file_get_contents($sql . ".install.sql");	
+	echo_br("Installing <strong>$service</strong>...");
+	$query = file_get_contents($sql_path . ".install.sql");	
 	print_pre($query);
 	
 	if (mysqli_multi_query($db, $query))
