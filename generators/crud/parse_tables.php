@@ -3,7 +3,6 @@
 // By Abdullah Daud
 // 6 November 2019
 
-
 /**
 * Skip CREATE TABLE [IF NOT EXISTS]
 */
@@ -184,6 +183,17 @@ function parse_create_tables($sql, &$tables)
 		if (strlen($colname) <= 0 || strlen($coltype) <= 0)
 			return FALSE;
 			
+		$coltype = strtolower($coltype);
+		
+		if (in_array($coltype, ['tinyint', 'smallint', 'mediumint', 'int', 'bigint', 'bit', 'boolean', 'serial']))
+			$coltype = 'integer';
+		elseif (in_array($coltype, ['char', 'varchar', 'tinytext', 'text', 'mediumtext', 'longtext']))
+			$coltype = 'string';
+		elseif (in_array($coltype, ['decimal', 'float', 'double', 'real']))
+			$coltype = 'float';
+		else	
+			$coltype = 'string';
+			
 		$cols[$colname] = $coltype;
 			
 		if ($sql[0] == ')')
@@ -216,6 +226,5 @@ function parse_create_tables($sql, &$tables)
 		
 	return parse_create_tables($sql, $tables);
 }
-
 
 ?>
